@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SetelaServerV3._1.Application.Features.Auth.Config;
 using SetelaServerV3._1.Infrastructure.Data;
+using SetelaServerV3._1.Shared.Policies;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,10 +35,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 var connectionString = Environment.GetEnvironmentVariable("DB_CONN");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddScoped<IPermissionHandler, Permissions>();
 builder.Services.AddAuthorization();
 
 
+
+
 builder.Services.AddControllers();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -47,6 +55,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

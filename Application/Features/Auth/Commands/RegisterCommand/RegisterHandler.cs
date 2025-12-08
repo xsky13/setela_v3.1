@@ -8,6 +8,7 @@ using SetelaServerV3._1.Domain.Entities;
 using SetelaServerV3._1.Domain.Enums;
 using SetelaServerV3._1.Infrastructure.Data;
 using SetelaServerV3._1.Shared.Utilities;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -36,6 +37,7 @@ namespace SetelaServerV3._1.Application.Features.Auth.Commands.RegisterCommand
 
             List<Claim> claims = [
                 new Claim(JwtRegisteredClaimNames.Sub, newUser.Id.ToString()),
+                new Claim(ClaimTypes.Role, "Student")
             ];
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.Key));

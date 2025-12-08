@@ -68,10 +68,11 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="10.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Features\Auth\DTO\" />
     <Folder Include="Infrastructure\Data\" />
   </ItemGroup>
 

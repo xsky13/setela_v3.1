@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using SetelaServerV3._1.Application.Features.Auth.Config;
 using SetelaServerV3._1.Application.Features.Auth.DTO;
 using SetelaServerV3._1.Domain.Entities;
+using SetelaServerV3._1.Domain.Enums;
 using SetelaServerV3._1.Infrastructure.Data;
 using SetelaServerV3._1.Shared.Utilities;
 using System.IdentityModel.Tokens.Jwt;
@@ -32,6 +33,9 @@ namespace SetelaServerV3._1.Application.Features.Auth.Commands.LoginCommand
             List<Claim> claims = [
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             ];
+
+            foreach (var role in user.Roles)
+                claims.Add(new Claim(ClaimTypes.Role, ((UserRoles)role).ToString()));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.Key));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

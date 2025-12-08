@@ -5,7 +5,7 @@
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public List<Enrollment> Enrollment { get; set; }
-        public List<SysUser> Professors { get; set; }
+        public List<Enrollment> Enrollment { get; set; } = [];
+        public List<SysUser> Professors { get; set; } = [];
     }
 }
