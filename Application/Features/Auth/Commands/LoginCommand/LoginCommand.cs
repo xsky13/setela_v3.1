@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace SetelaServerV3._1.Application.Features.Auth.Commands
+namespace SetelaServerV3._1.Application.Features.Auth.Commands.LoginCommand
 {
     public class LoginCommand : IRequest<string>
     {

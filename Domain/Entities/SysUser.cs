@@ -9,7 +9,7 @@ namespace SetelaServerV3._1.Domain.Entities
         public string Email { get; set; }
         public string PasswordHash { get; set; }
         public UserRoles[] Roles { get; set; }
-        public List<Enrollment> Enrollments { get; set; }
-        public List<Course> ProfessorCourses { get; set; }
+        public List<Enrollment> Enrollments { get; set; } = [];
+        public List<Course> ProfessorCourses { get; set; } = [];
     }
 }

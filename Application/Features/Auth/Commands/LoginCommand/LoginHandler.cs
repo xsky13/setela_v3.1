@@ -9,7 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace SetelaServerV3._1.Application.Features.Auth.Commands
+namespace SetelaServerV3._1.Application.Features.Auth.Commands.LoginCommand
 {
     public class LoginHandler(AppDbContext _db, IOptions<AuthOptions> options) : IRequestHandler<LoginCommand, string>
     {
