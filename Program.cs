@@ -29,7 +29,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
  		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("Jwt__Key") ?? throw new InvalidOperationException("No hay jwtkey"))),
         ValidIssuers = [builder.Configuration["Jwt:Issuer"]],
         ValidAudiences = [builder.Configuration["Jwt:Audience"]],
- 		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration\["Jwt:Key"]))
     };
 });
 

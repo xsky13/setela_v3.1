@@ -17,8 +17,8 @@ namespace SetelaServerV3._1.Application.Features.Auth.Commands.LoginCommand
 
         public async Task<string> Handle(LoginCommand command, CancellationToken cancellationToken)
         {
-            var user = await _db.SysUsers.FirstOrDefaultAsync(user => user.Email == command.Email) ?? throw new UnauthorizedAccessException("Email invalido");
-            
+            var user = await _db.SysUsers.FirstOrDefaultAsync(user => user.Email == command.Email, cancellationToken) ?? throw new UnauthorizedAccessException("Email invalido");
+
             if (!BCrypt.Net.BCrypt.Verify(command.Password, user.PasswordHash))
                 throw new UnauthorizedAccessException("Contrasena invalida");
 

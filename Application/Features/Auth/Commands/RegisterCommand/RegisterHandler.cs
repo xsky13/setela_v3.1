@@ -30,6 +30,7 @@ namespace SetelaServerV3._1.Application.Features.Auth.Commands.RegisterCommand
             };
 
             _db.SysUsers.Add(newUser);
+            await _db.SaveChangesAsync(cancellationToken);
 
             List<Claim> claims = [
                 new Claim(JwtRegisteredClaimNames.Sub, newUser.Id.ToString()),
