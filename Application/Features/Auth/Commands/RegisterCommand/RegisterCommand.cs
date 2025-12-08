@@ -1,15 +1,17 @@
 ﻿using MediatR;
+using SetelaServerV3._1.Application.Features.Auth.DTO;
+using SetelaServerV3._1.Shared.Utilities;
 using System.ComponentModel.DataAnnotations;
 
 namespace SetelaServerV3._1.Application.Features.Auth.Commands.RegisterCommand
 {
-    public class RegisterCommand : IRequest<string>
+    public class RegisterCommand : IRequest<Result<LoginResponse>>
     {
         [Required(ErrorMessage = "Su nombre no puede estar vacio")]
         public string Name { get; set; }
-        [EmailAddress(ErrorMessage = "Email invalido")]
+        [Required(ErrorMessage = "Su email no puede estar vacio"), EmailAddress(ErrorMessage = "Email invalido")]
         public string Email { get; set; }
-        [MinLength(6, ErrorMessage = "Su contrasena debe tener por lo menos 6 caracteres")]
+        [Required(ErrorMessage = "Su contrasena no puede estar vacio"), MinLength(6, ErrorMessage = "Su contrasena debe tener por lo menos 6 caracteres")]
         public string Password { get; set; }
     }
 }

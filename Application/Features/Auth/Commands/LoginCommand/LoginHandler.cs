@@ -4,23 +4,29 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SetelaServerV3._1.Application.Features.Auth.Config;
+using SetelaServerV3._1.Application.Features.Auth.DTO;
+using SetelaServerV3._1.Domain.Entities;
 using SetelaServerV3._1.Infrastructure.Data;
+using SetelaServerV3._1.Shared.Utilities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace SetelaServerV3._1.Application.Features.Auth.Commands.LoginCommand
 {
-    public class LoginHandler(AppDbContext _db, IOptions<AuthOptions> options) : IRequestHandler<LoginCommand, string>
+    public class LoginHandler(AppDbContext _db, IOptions<AuthOptions> options) : IRequestHandler<LoginCommand, Result<LoginResponse>>
     {
         private readonly AuthOptions _options = options.Value;
 
-        public async Task<string> Handle(LoginCommand command, CancellationToken cancellationToken)
+        public async Task<Result<LoginResponse>> Handle(LoginCommand command, CancellationToken cancellationToken)
         {
-            var user = await _db.SysUsers.FirstOrDefaultAsync(user => user.Email == command.Email, cancellationToken) ?? throw new UnauthorizedAccessException("Email invalido");
+            var user = await _db.SysUsers.FirstOrDefaultAsync(user => user.Email == command.Email, cancellationToken);
+            
+            if (user == null)
+                return Result<LoginResponse>.Fail("Email invalida");
 
             if (!BCrypt.Net.BCrypt.Verify(command.Password, user.PasswordHash))
-                throw new UnauthorizedAccessException("Contrasena invalida");
+                return Result<LoginResponse>.Fail("Contrasena invalida");
 
 
             List<Claim> claims = [
@@ -38,7 +44,7 @@ namespace SetelaServerV3._1.Application.Features.Auth.Commands.LoginCommand
                 notBefore: DateTime.UtcNow,
                 signingCredentials: credentials
             );
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return Result<LoginResponse>.Ok(new LoginResponse { Token = new JwtSecurityTokenHandler().WriteToken(token) });
         }
     }
 }

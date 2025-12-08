@@ -3,23 +3,25 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SetelaServerV3._1.Application.Features.Auth.Config;
+using SetelaServerV3._1.Application.Features.Auth.DTO;
 using SetelaServerV3._1.Domain.Entities;
 using SetelaServerV3._1.Domain.Enums;
 using SetelaServerV3._1.Infrastructure.Data;
+using SetelaServerV3._1.Shared.Utilities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace SetelaServerV3._1.Application.Features.Auth.Commands.RegisterCommand
 {
-    public class RegisterHandler(AppDbContext _db, IOptions<AuthOptions> options) : IRequestHandler<RegisterCommand, string>
+    public class RegisterHandler(AppDbContext _db, IOptions<AuthOptions> options) : IRequestHandler<RegisterCommand, Result<LoginResponse>>
     {
         private readonly AuthOptions _options = options.Value;
-        public async Task<string> Handle(RegisterCommand command, CancellationToken cancellationToken)
+        public async Task<Result<LoginResponse>> Handle(RegisterCommand command, CancellationToken cancellationToken)
         {
             var userWithEmail = await _db.SysUsers.FirstOrDefaultAsync(user => user.Email == command.Email, cancellationToken);
             if (userWithEmail != null)
-                throw new InvalidOperationException("Un usuario con ese email ya existe");
+                return Result<LoginResponse>.Fail("Un usuario con ese email ya existe");
 
             var newUser = new SysUser
             {
@@ -47,8 +49,7 @@ namespace SetelaServerV3._1.Application.Features.Auth.Commands.RegisterCommand
                 notBefore: DateTime.UtcNow,
                 signingCredentials: credentials
             );
-            return new JwtSecurityTokenHandler().WriteToken(token);
-
+            return Result<LoginResponse>.Ok(new LoginResponse { Token = new JwtSecurityTokenHandler().WriteToken(token) });
         }
     }
 }
