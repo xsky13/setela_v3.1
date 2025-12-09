@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using SetelaServerV3._1.Application.Features.CourseFeature.Commands.AddProfesorCommand;
 using SetelaServerV3._1.Application.Features.CourseFeature.Commands.CreateCourseCommand;
+using SetelaServerV3._1.Application.Features.CourseFeature.Commands.DisenrollStudentCommand;
 using SetelaServerV3._1.Application.Features.CourseFeature.Commands.EnrollStudentCommand;
 using SetelaServerV3._1.Application.Features.CourseFeature.Commands.RemoveProfessorCommand;
 using SetelaServerV3._1.Application.Features.CourseFeature.Commands.UpdateCourse;
@@ -86,8 +87,19 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature
         {
             ClaimsPrincipal currentUser = HttpContext.User;
             string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            
+
             var response = await _mediator.Send(new EnrollStudentCommand { CurrentUserId = int.Parse(userId), CourseId = id, UserId = request.UserId });
+            return response.ToActionResult();
+        }
+
+        [Authorize]
+        [HttpPost("{id}/disenroll")]
+        public async Task<ActionResult<CourseDTO>> Disnroll([FromBody] EnrollStudentRequestDTO request, int id)
+        {
+            ClaimsPrincipal currentUser = HttpContext.User;
+            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            var response = await _mediator.Send(new DisenrollStudentCommand { CurrentUserId = int.Parse(userId), CourseId = id, UserId = request.UserId });
             return response.ToActionResult();
         }
     }

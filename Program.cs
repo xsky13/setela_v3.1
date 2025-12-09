@@ -3,6 +3,7 @@ using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using SetelaServerV3._1;
 using SetelaServerV3._1.Application.Features.Auth.Config;
 using SetelaServerV3._1.Application.Features.CourseFeature;
 using SetelaServerV3._1.Infrastructure.Data;
@@ -53,7 +54,11 @@ builder.Services.AddSwaggerGen();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Services.AddExceptionHandler<ExceptionHandler>();
+
 var app = builder.Build();
+app.UseExceptionHandler(options => { });
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

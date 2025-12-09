@@ -19,14 +19,13 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature.Commands.EnrollSt
             if (!_userPermissions.CanChangeStudents(currentUser, command.UserId, command.CourseId)) 
                 return Result<CourseDTO>.Fail("No puede editar este curso", 403);
 
-            var user = await _db.SysUsers.Include(user => user.Enrollments).FirstOrDefaultAsync(user => user.Id == command.UserId, cancellationToken);
-            if (user == null) return Result<CourseDTO>.Fail("El usuario no existe");
-
-            var course = await _db.Courses.FirstOrDefaultAsync(course => course.Id == command.CourseId, cancellationToken);
+            var course = await _db.Courses
+                .Include(course => course.Enrollments.Where(e => e.SysUserId == command.UserId))
+                .FirstOrDefaultAsync(course => course.Id == command.CourseId, cancellationToken);
             if (course == null) return Result<CourseDTO>.Fail("El curso no existe");
 
             // check belonging
-            if (user.Enrollments.Any(enrollment => enrollment.CourseId == command.CourseId))
+            if (course.Enrollments.Count != 0)
                 return Result<CourseDTO>.Fail("El usuario ya esta en el curso");
 
             var enrollment = new Enrollment
@@ -37,7 +36,6 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature.Commands.EnrollSt
                 Valid = true,
             };
 
-            user.Enrollments.Add(enrollment);
             course.Enrollments.Add(enrollment);
 
             await _db.SaveChangesAsync(cancellationToken);
