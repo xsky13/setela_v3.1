@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SetelaServerV3._1.Application.Features.UserFeature.Commands.AddRoleToUserCommand;
+using SetelaServerV3._1.Application.Features.UserFeature.Commands.RemoveRoleFromUserCommand;
 using SetelaServerV3._1.Application.Features.UserFeature.Commands.UpdateUserCommand;
 using SetelaServerV3._1.Application.Features.UserFeature.DTO;
 using SetelaServerV3._1.Application.Features.UserFeature.Queries.GetUserByIdQuery;
@@ -53,6 +55,22 @@ namespace SetelaServerV3._1.Application.Features.UserFeature
                 Email = request.Email
             });
 
+            return response.ToActionResult();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("{id}/add_role")]
+        public async Task<ActionResult<UserDTO>> AddRoleToUser([FromBody] UserRoleChangeRequestDTO request, int id)
+        {
+            var response = await _mediator.Send(new AddRoleToUserCommand { UserId = id, Role = request.Role });
+            return response.ToActionResult();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("{id}/remove_role")]
+        public async Task<ActionResult<UserDTO>> RemoveRoleFromUser([FromBody] UserRoleChangeRequestDTO request, int id)
+        {
+            var response = await _mediator.Send(new RemoveRoleFromUserCommand { UserId = id, Role = request.Role });
             return response.ToActionResult();
         }
     }
