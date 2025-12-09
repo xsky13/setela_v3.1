@@ -13,7 +13,7 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature.Commands.RemovePr
         public async Task<Result<CourseDTO>> Handle(RemoveProfessorCommand command, CancellationToken cancellationToken)
         {
             var professorToRemove = await _db.SysUsers
-                .Include(user => user.ProfessorCourses)
+                .Include(user => user.ProfessorCourses.Where(course => course.Id == command.CourseId))
                 .FirstOrDefaultAsync(user => user.Id == command.UserId, cancellationToken);
             if (professorToRemove == null) return Result<CourseDTO>.Fail("Usuario no existe");
 
@@ -22,7 +22,7 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature.Commands.RemovePr
                 .FirstOrDefaultAsync(course => course.Id == command.CourseId, cancellationToken);
             if (course == null) return Result<CourseDTO>.Fail("Curso no existe");
 
-            if (!professorToRemove.ProfessorCourses.Any(course => course.Id == command.CourseId))
+            if (!professorToRemove.ProfessorCourses.Any())
                 return Result<CourseDTO>.Fail("El usuario no es profesor de este curso");
 
             professorToRemove.ProfessorCourses.Remove(course);
