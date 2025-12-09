@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using SetelaServerV3._1.Application.Features.CourseFeature.Commands.AddProfesorCommand;
 using SetelaServerV3._1.Application.Features.CourseFeature.Commands.CreateCourseCommand;
 using SetelaServerV3._1.Application.Features.CourseFeature.Commands.DisenrollStudentCommand;
@@ -12,9 +11,7 @@ using SetelaServerV3._1.Application.Features.CourseFeature.DTO;
 using SetelaServerV3._1.Application.Features.CourseFeature.Queries.GetCourseByIdQuery;
 using SetelaServerV3._1.Application.Features.CourseFeature.Queries.GetCourses;
 using SetelaServerV3._1.Domain.Entities;
-using SetelaServerV3._1.Domain.Enums;
 using SetelaServerV3._1.Shared.Utilities;
-using System.Collections.Generic;
 using System.Security.Claims;
 
 namespace SetelaServerV3._1.Application.Features.CourseFeature
