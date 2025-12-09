@@ -45,5 +45,15 @@ namespace SetelaServerV3._1.Shared.Policies
 
             return isAdmin || isAssignedProfessor;
         }
+
+        public bool CanEditUser(int currentUserId, int userToChangeId, List<UserRoles> currentUserRoles)
+        {
+            if (currentUserRoles.Contains(UserRoles.Admin)) return true;
+            else
+            {
+                if (currentUserId != userToChangeId) return false;
+                return true;
+            }
+        }
     }
 }
