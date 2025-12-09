@@ -1,8 +1,10 @@
+using AutoMapper;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SetelaServerV3._1.Application.Features.Auth.Config;
+using SetelaServerV3._1.Application.Features.CourseFeature;
 using SetelaServerV3._1.Infrastructure.Data;
 using SetelaServerV3._1.Shared.Policies;
 using System.Text;
@@ -36,11 +38,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 var connectionString = Environment.GetEnvironmentVariable("DB_CONN");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddScoped<IPermissionHandler, Permissions>();
+
 builder.Services.AddAuthorization();
 
 
 
 
+builder.Services.AddAutoMapper(typeof(CourseMappingProfile).Assembly);
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
