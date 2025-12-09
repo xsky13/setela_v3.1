@@ -1,15 +1,19 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using SetelaServerV3._1.Application.Features.CourseFeature.Commands.AddProfesorCommand;
 using SetelaServerV3._1.Application.Features.CourseFeature.Commands.CreateCourseCommand;
+using SetelaServerV3._1.Application.Features.CourseFeature.Commands.EnrollStudentCommand;
 using SetelaServerV3._1.Application.Features.CourseFeature.Commands.RemoveProfessorCommand;
 using SetelaServerV3._1.Application.Features.CourseFeature.Commands.UpdateCourse;
 using SetelaServerV3._1.Application.Features.CourseFeature.DTO;
 using SetelaServerV3._1.Application.Features.CourseFeature.Queries.GetCourseByIdQuery;
 using SetelaServerV3._1.Application.Features.CourseFeature.Queries.GetCourses;
 using SetelaServerV3._1.Domain.Entities;
+using SetelaServerV3._1.Domain.Enums;
 using SetelaServerV3._1.Shared.Utilities;
+using System.Collections.Generic;
 using System.Security.Claims;
 
 namespace SetelaServerV3._1.Application.Features.CourseFeature
@@ -73,6 +77,25 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature
         public async Task<ActionResult<CourseDTO>> RemoveProfessor([FromBody] UpdateProfessorsRequestDTO request, int id)
         {
             var response = await _mediator.Send(new RemoveProfessorCommand { CourseId = id, UserId = request.UserId });
+            return response.ToActionResult();
+        }
+
+        [Authorize]
+        [HttpPost("{id}/enroll")]
+        public async Task<ActionResult<CourseDTO>> Enroll([FromBody] EnrollStudentRequestDTO request, int id)
+        {
+            ClaimsPrincipal currentUser = HttpContext.User;
+            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            IEnumerable<Claim> roleClaims = currentUser.FindAll(ClaimTypes.Role);
+            List<string> roles = roleClaims.Select(c => c.Value).ToList();
+            var userRoleEnums = roles
+                .Select(roleString => Enum.TryParse<UserRoles>(roleString, true, out UserRoles result) ? (UserRoles?)result : null)
+                .Where(role => role.HasValue)
+                .Select(role => role!.Value)
+                .ToList();
+            
+            var response = await _mediator.Send(new EnrollStudentCommand { CourseId = id, UserId = request.UserId, UserRoles = userRoleEnums });
             return response.ToActionResult();
         }
     }

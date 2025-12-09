@@ -8,7 +8,9 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature
     {
         public CourseMappingProfile()
         {
-            CreateMap<SysUser, ProfessorForCourseDTO>();
+            CreateMap<SysUser, UserForCourseDTO>();
+            CreateMap<Enrollment, EnrollmentDTO>();
+                //.ForMember(dest => dest.SysUser, opt => opt.MapFrom(src => src.SysUser));
             CreateMap<Course, CourseDTO>();
         }
     }
