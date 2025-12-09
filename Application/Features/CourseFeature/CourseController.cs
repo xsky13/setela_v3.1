@@ -86,16 +86,8 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature
         {
             ClaimsPrincipal currentUser = HttpContext.User;
             string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-
-            IEnumerable<Claim> roleClaims = currentUser.FindAll(ClaimTypes.Role);
-            List<string> roles = roleClaims.Select(c => c.Value).ToList();
-            var userRoleEnums = roles
-                .Select(roleString => Enum.TryParse<UserRoles>(roleString, true, out UserRoles result) ? (UserRoles?)result : null)
-                .Where(role => role.HasValue)
-                .Select(role => role!.Value)
-                .ToList();
             
-            var response = await _mediator.Send(new EnrollStudentCommand { CourseId = id, UserId = request.UserId, UserRoles = userRoleEnums });
+            var response = await _mediator.Send(new EnrollStudentCommand { CurrentUserId = int.Parse(userId), CourseId = id, UserId = request.UserId });
             return response.ToActionResult();
         }
     }

@@ -8,6 +8,23 @@ namespace SetelaServerV3._1.Shared.Policies
 {
     public class Permissions(AppDbContext _db) : IPermissionHandler
     {
+        public bool CanChangeStudents(SysUser currentUser, int userToChangeId, int courseId)
+        {
+            if (currentUser.Roles.Contains(UserRoles.Admin)) return true;
+
+            if (currentUser.Roles.Contains(UserRoles.Student))
+            {
+                if (currentUser.Id == userToChangeId) return true;
+                return false;
+            } else if (currentUser.Roles.Contains(UserRoles.Professor))
+            {
+                if (currentUser.ProfessorCourses.Any(c => c.Id == courseId)) return true;
+                return false;
+            }
+
+            return false;
+        }
+
         public async Task<bool> CanEditCourse(int userId, Course course)
         {
             var user = await _db.SysUsers.FirstOrDefaultAsync(user => user.Id == userId);
