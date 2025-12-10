@@ -8,6 +8,14 @@ namespace SetelaServerV3._1.Application.Features.UserFeature
     {
         public UserMappingProfile()
         {
+            CreateMap<Course, ProfessorCoursesDTO>()
+                .ForMember(dest => dest.CourseTitle, opt => opt.MapFrom(src => src.Title))
+                .ForMember(dest => dest.CourseDescription, opt => opt.MapFrom(src => src.Description));
+
+            CreateMap<Enrollment, EnrollmentDTO>()
+                .ForMember(dest => dest.CourseTitle, opt => opt.MapFrom(src => src.Course.Title))
+                .ForMember(dest => dest.CourseDescription, opt => opt.MapFrom(src => src.Course.Description));
+
             CreateMap<SysUser, UserDTO>();
         }
     }
