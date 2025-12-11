@@ -7,5 +7,6 @@
         public string Description { get; set; }
         public List<EnrollmentDTO> Enrollments { get; set; } = [];
         public List<UserForCourseDTO> Professors { get; set; } = [];
+        public List<TopicDTO> TopicSeparators { get; set; } = [];
     }
 }
