@@ -4,6 +4,6 @@
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public List<CourseDTO> Course { get; set; }
+        public CourseDTO Course { get; set; }
     }
 }
