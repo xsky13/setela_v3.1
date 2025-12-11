@@ -8,6 +8,6 @@ namespace SetelaServerV3._1.Infrastructure.Data
         public DbSet<SysUser> SysUsers { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
-
+        public DbSet<TopicSeparator> TopicSeparators { get; set; }
     }
 }

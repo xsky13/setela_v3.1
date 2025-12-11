@@ -119,6 +119,28 @@ namespace SetelaServerV3._1.Migrations
                     b.ToTable("SysUsers");
                 });
 
+            modelBuilder.Entity("SetelaServerV3._1.Domain.Entities.TopicSeparator", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("TopicSeparators");
+                });
+
             modelBuilder.Entity("CourseSysUser", b =>
                 {
                     b.HasOne("SetelaServerV3._1.Domain.Entities.Course", null)
@@ -153,9 +175,22 @@ namespace SetelaServerV3._1.Migrations
                     b.Navigation("SysUser");
                 });
 
+            modelBuilder.Entity("SetelaServerV3._1.Domain.Entities.TopicSeparator", b =>
+                {
+                    b.HasOne("SetelaServerV3._1.Domain.Entities.Course", "Course")
+                        .WithMany("TopicSeparators")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+                });
+
             modelBuilder.Entity("SetelaServerV3._1.Domain.Entities.Course", b =>
                 {
                     b.Navigation("Enrollments");
+
+                    b.Navigation("TopicSeparators");
                 });
 
             modelBuilder.Entity("SetelaServerV3._1.Domain.Entities.SysUser", b =>

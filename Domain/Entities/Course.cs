@@ -7,5 +7,6 @@
         public string Description { get; set; }
         public List<Enrollment> Enrollments { get; set; } = [];
         public List<SysUser> Professors { get; set; } = [];
+        public List<TopicSeparator> TopicSeparators { get; set; } = [];
     }
 }
