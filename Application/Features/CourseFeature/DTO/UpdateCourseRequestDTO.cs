@@ -4,7 +4,6 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature.DTO
 {
     public class UpdateCourseRequestDTO
     {
-        public int Id { get; set; }
         [Required(ErrorMessage = "El titulo no puede estar vacio")]
         public string Title { get; set; }
         public string Description { get; set; } = "";

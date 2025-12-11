@@ -7,5 +7,6 @@ namespace SetelaServerV3._1.Application.Features.TopicSeparatorFeature.Commands.
     public class DeleteTopicSeparatorCommand : IRequest<Result<object>>
     {
         public int Id { get; set; }
+        public int CurrentUserId { get; set; }
     }
 }

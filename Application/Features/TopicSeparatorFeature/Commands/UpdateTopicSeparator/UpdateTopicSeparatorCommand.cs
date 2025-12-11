@@ -6,6 +6,7 @@ namespace SetelaServerV3._1.Application.Features.TopicSeparatorFeature.Commands.
 {
     public class UpdateTopicSeparatorCommand : IRequest<Result<TopicSeparatorDTO>>
     {
+        public int CurrentUserId { get; set; }
         public int Id { get; set; }
         public string NewTitle { get; set; }
     }

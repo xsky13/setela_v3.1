@@ -6,6 +6,7 @@ namespace SetelaServerV3._1.Application.Features.TopicSeparatorFeature.Commands.
 {
     public class CreateTopicSeparatorCommand : IRequest<Result<TopicSeparatorDTO>>
     {
+        public int CurrentUserId { get; set; }
         public int CourseId { get; set; }
         public string Title { get; set; }
     }

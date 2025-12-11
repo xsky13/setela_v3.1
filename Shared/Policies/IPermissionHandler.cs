@@ -7,6 +7,7 @@ namespace SetelaServerV3._1.Shared.Policies
     {
         bool CanEditUser(int currentUserId, int userToChangeId, List<UserRoles> currentUserRoles);
         Task<bool> CanEditCourse(int userId, Course course);
+        Task<bool> CanEditCourse(int userId, int courseId);
         bool CanEditCourse(SysUser user, Course course);
         bool CanChangeStudents(SysUser currentUser, int userToChangeId, int courseId);
     }

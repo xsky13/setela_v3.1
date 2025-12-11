@@ -44,15 +44,15 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature
         }
 
         [Authorize]
-        [HttpPut]
-        public async Task<ActionResult<Course>> UpdateCourse([FromBody] UpdateCourseRequestDTO request)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Course>> UpdateCourse([FromBody] UpdateCourseRequestDTO request, int id)
         {
             ClaimsPrincipal currentUser = HttpContext.User;
             string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             var command = new UpdateCourseCommand
             {
-                Id = request.Id,
+                Id = id,
                 UserId = int.Parse(userId),
                 Title = request.Title,
                 Description = request.Description
