@@ -74,8 +74,4 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="10.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Infrastructure\Data\" />
-  </ItemGroup>
-
 </Project>
