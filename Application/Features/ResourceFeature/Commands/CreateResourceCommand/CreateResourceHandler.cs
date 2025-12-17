@@ -31,7 +31,8 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Create
                 ResourceType = resourceType,
                 ParentType = parentResourceType,
                 ParentId = command.ParentId,
-                CreationDate = DateTime.UtcNow
+                CreationDate = DateTime.UtcNow,
+                SysUserId = command.UserId
             };
 
             _db.Resources.Add(newResource);

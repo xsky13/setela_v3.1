@@ -11,5 +11,7 @@ namespace SetelaServerV3._1.Domain.Entities
         public ResourceParentType ParentType { get; set; }
         public int ParentId { get; set; }
         public DateTime CreationDate { get; set; }
+        public int SysUserId { get; set; }
+        public SysUser SysUser { get; set; }
     }
 }
