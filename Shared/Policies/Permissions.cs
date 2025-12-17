@@ -67,5 +67,23 @@ namespace SetelaServerV3._1.Shared.Policies
                 return true;
             }
         }
+
+        public async Task<bool> CanCreateResource(ResourceParentType parentType, int parentId, int userId)
+        {
+            var currentUser = await _db.SysUsers.FindAsync(userId);
+            if (currentUser == null) return false;
+
+            if (currentUser.Roles.Contains(UserRoles.Student))
+            {
+                if (parentType != ResourceParentType.AssignmentSubmission || parentType != ResourceParentType.ExamSubmission)
+                    return false;
+                return true;
+            }
+            /* TODO */
+            /* ADD PERMISSIONS FOR PROFESSOR AND ADMIN, TOO LAZY TOO DO IT NOW*/
+            return true;
+
+        }
+
     }
 }
