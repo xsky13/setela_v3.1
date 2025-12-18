@@ -6,28 +6,53 @@ using SetelaServerV3._1.Domain.Entities;
 using SetelaServerV3._1.Domain.Enums;
 using SetelaServerV3._1.Infrastructure.Data;
 using SetelaServerV3._1.Shared.Common.DTO;
+using SetelaServerV3._1.Shared.Common.Interfaces;
 
 namespace SetelaServerV3._1.Infrastructure.Extensions
 {
     public static class CourseExtensions
     {
-        public static async Task<CourseDTO?> LoadResources(
-            this IQueryable<CourseDTO> query, 
+        public static async Task<T?> LoadResources<T>(
+            this IQueryable<T> query, 
             AppDbContext _db,
             IMapper _mapper,
-            CancellationToken cancellationToken = default)
+            ResourceParentType parentType,
+            CancellationToken cancellationToken = default) where T : class, IResourceable
         {
             var dto = await query.FirstOrDefaultAsync(cancellationToken);
             if (dto == null) return null;
 
-            var resources = await _db.Resources
-                .Include(r => r.SysUser)
-                .Where(r => r.ParentId == dto.Id && r.ParentType == ResourceParentType.Course)
-                .ToListAsync(cancellationToken);
+            dto.Resources = await GetResourcesAsync(_db, _mapper, dto.Id, parentType, cancellationToken);
 
-            dto.Resources = _mapper.Map<List<CourseResourceDTO>>(resources);
+            if (dto is CourseDTO courseDto)
+            {
+                foreach (var topic in courseDto.TopicSeparators)
+                {
+                    topic.Resources = await GetResourcesAsync(
+                        _db,
+                        _mapper,
+                        topic.Id,
+                        ResourceParentType.TopicSeparator,
+                        cancellationToken);
+                }
+            }
 
             return dto;
+        }
+
+        private static async Task<List<CourseResourceDTO>> GetResourcesAsync(
+            AppDbContext db,
+            IMapper mapper,
+            int parentId,
+            ResourceParentType type,
+            CancellationToken ct)
+                {
+                    var entities = await db.Resources
+                        .Include(r => r.SysUser)
+                        .Where(r => r.ParentId == parentId && r.ParentType == type)
+                        .ToListAsync(ct);
+
+                    return mapper.Map<List<CourseResourceDTO>>(entities);
         }
     }
 }

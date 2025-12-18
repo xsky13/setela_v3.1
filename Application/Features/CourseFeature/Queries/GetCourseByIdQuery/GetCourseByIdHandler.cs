@@ -16,7 +16,7 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature.Queries.GetCourse
             var course = await _db.Courses
                 .Where(c => c.Id == query.CourseId)
                 .ProjectTo<CourseDTO>(_mapper.ConfigurationProvider)
-                .LoadResources(_db, _mapper, cancellationToken);
+                .LoadResources(_db, _mapper, Domain.Enums.ResourceParentType.Course, cancellationToken);
 
             if (course == null)
                 return Result<CourseDTO>.Fail("Este curso no existe", 404);

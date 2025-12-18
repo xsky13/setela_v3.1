@@ -8,7 +8,8 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature
     {
         public CourseMappingProfile()
         {
-            CreateMap<TopicSeparator, TopicDTO>();
+            CreateMap<TopicSeparator, TopicDTO>()
+                .ForMember(dest => dest.Resources, opt => opt.Ignore());
             CreateMap<SysUser, UserForCourseDTO>();
             CreateMap<Enrollment, EnrollmentDTO>();
             CreateMap<Course, CourseDTO>()

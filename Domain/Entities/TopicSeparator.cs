@@ -1,4 +1,6 @@
-﻿namespace SetelaServerV3._1.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SetelaServerV3._1.Domain.Entities
 {
     public class TopicSeparator
     {
@@ -6,5 +8,8 @@
         public string Title { get; set; }
         public int CourseId { get; set; }
         public Course Course { get; set; }
+
+        [NotMapped]
+        public List<Resource> Resources { get; set; } = [];
     }
 }

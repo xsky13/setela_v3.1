@@ -1,10 +1,9 @@
-﻿using SetelaServerV3._1.Domain.Entities;
-using SetelaServerV3._1.Shared.Common.DTO;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using SetelaServerV3._1.Shared.Common.DTO;
+using SetelaServerV3._1.Shared.Common.Interfaces;
 
 namespace SetelaServerV3._1.Application.Features.CourseFeature.DTO
 {
-    public class CourseDTO
+    public class CourseDTO : IResourceable
     {
         public int Id { get; set; }
         public string Title { get; set; }
