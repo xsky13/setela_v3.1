@@ -10,5 +10,19 @@ namespace SetelaServerV3._1.Infrastructure.Data
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<TopicSeparator> TopicSeparators { get; set; }
         public DbSet<Resource> Resources { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Resource>()
+                .HasOne<Course>()
+                .WithMany()
+                .HasForeignKey(r => r.CourseId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+        }
+
+       
     }
 }

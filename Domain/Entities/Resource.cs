@@ -13,5 +13,6 @@ namespace SetelaServerV3._1.Domain.Entities
         public DateTime CreationDate { get; set; }
         public int SysUserId { get; set; }
         public SysUser SysUser { get; set; }
+        public int CourseId { get; set; }
     }
 }
