@@ -1,4 +1,6 @@
-﻿namespace SetelaServerV3._1.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SetelaServerV3._1.Domain.Entities
 {
     public class Course
     {
@@ -8,5 +10,8 @@
         public List<Enrollment> Enrollments { get; set; } = [];
         public List<SysUser> Professors { get; set; } = [];
         public List<TopicSeparator> TopicSeparators { get; set; } = [];
+
+        [NotMapped]
+        public List<Resource> Resources { get; set; } = [];
     }
 }

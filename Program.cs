@@ -9,6 +9,7 @@ using SetelaServerV3._1.Application.Features.CourseFeature;
 using SetelaServerV3._1.Application.Features.TopicSeparatorFeature;
 using SetelaServerV3._1.Application.Features.UserFeature;
 using SetelaServerV3._1.Infrastructure.Data;
+using SetelaServerV3._1.Shared.Common;
 using SetelaServerV3._1.Shared.Policies;
 using System.Text;
 
@@ -48,6 +49,7 @@ builder.Services.AddAuthorization();
 
 
 builder.Services.AddAutoMapper(
+    typeof(GeneralMappingProfile).Assembly,
     typeof(CourseMappingProfile).Assembly, 
     typeof(UserMappingProfile).Assembly,
     typeof(TopicSeparatorMappingProfile).Assembly);

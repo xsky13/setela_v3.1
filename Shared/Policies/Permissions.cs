@@ -83,13 +83,13 @@ namespace SetelaServerV3._1.Shared.Policies
                  */
                 if (parentType != ResourceParentType.AssignmentSubmission || parentType != ResourceParentType.ExamSubmission)
                 {
-                    await _db.Entry(currentUser).Collection(u => u.ProfessorCourses).LoadAsync();
+                    var isProfessorOfCourse = await _db.Entry(currentUser)
+                        .Collection(u => u.ProfessorCourses)
+                        .Query()
+                        .AnyAsync(course => course.Id == courseId);
 
                     // if the resource that is beign created is not a submission check if the professor is in fact professor of said course
-                    if (currentUser.ProfessorCourses.Any(course => course.Id == courseId))
-                    {
-                        return true;
-                    } else return false;
+                    return isProfessorOfCourse;
                 }
                     
                 // Professor is making a submission.

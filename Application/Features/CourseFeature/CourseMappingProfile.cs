@@ -11,7 +11,8 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature
             CreateMap<TopicSeparator, TopicDTO>();
             CreateMap<SysUser, UserForCourseDTO>();
             CreateMap<Enrollment, EnrollmentDTO>();
-            CreateMap<Course, CourseDTO>();
+            CreateMap<Course, CourseDTO>()
+                .ForMember(dest => dest.Resources, opt => opt.Ignore());
         }
     }
 }
