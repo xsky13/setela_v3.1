@@ -11,8 +11,13 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Delete
         public async Task<Result<object>> Handle(DeleteResourceCommand command, CancellationToken cancellationToken)
         {
             /* TODO: ADD USER PERMISSIONS (SAME AS UPDATE) */
+
             var resource = await _db.Resources.FindAsync([command.ResourceId], cancellationToken);
             if (resource == null) return Result<object>.Fail("El recurso especificado no existe");
+
+
+            if (!await _userPermissions.CanModifyResource(resource.ParentType, command.UserId, resource.CourseId))
+                return Result<object>.Fail("No puede modificar este recurso", 403);
 
             _db.Resources.Remove(resource);
             await _db.SaveChangesAsync(cancellationToken);

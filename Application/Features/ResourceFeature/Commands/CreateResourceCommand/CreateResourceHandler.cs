@@ -21,7 +21,7 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Create
             if (!await ParentExistsAsync(parentResourceType, command.ParentId, cancellationToken))
                 return Result<Resource>.Fail("La entidad no existe", 404);
 
-            if (!await _userPermissions.CanCreateResource(parentResourceType, command.ParentId, command.UserId))
+            if (!await _userPermissions.CanModifyResource(parentResourceType, command.UserId, command.CourseId))
                 return Result<Resource>.Fail("No tiene permisos para crear recursos", 403);
 
             var newResource = new Resource
@@ -32,7 +32,8 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Create
                 ParentType = parentResourceType,
                 ParentId = command.ParentId,
                 CreationDate = DateTime.UtcNow,
-                SysUserId = command.UserId
+                SysUserId = command.UserId,
+                CourseId = command.CourseId
             };
 
             _db.Resources.Add(newResource);

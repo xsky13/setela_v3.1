@@ -18,6 +18,9 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Update
             var resource = await _db.Resources.FindAsync([command.ResourceId], cancellationToken);
             if (resource == null) return Result<Resource>.Fail("El recurso no existe");
 
+            if (!await _userPermissions.CanModifyResource(resource.ParentType, command.UserId, resource.CourseId))
+                return Result<Resource>.Fail("No puede modificar este recurso", 403);
+
 
             if (command.Type != null)
             {

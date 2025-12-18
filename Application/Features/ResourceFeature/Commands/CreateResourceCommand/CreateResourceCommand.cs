@@ -12,5 +12,6 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Create
         public string ParentType { get; set; }
         public int ParentId { get; set; }
         public int UserId { get; set; }
+        public int CourseId { get; set; }
     }
 }

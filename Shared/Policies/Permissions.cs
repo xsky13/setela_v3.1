@@ -68,20 +68,42 @@ namespace SetelaServerV3._1.Shared.Policies
             }
         }
 
-        public async Task<bool> CanCreateResource(ResourceParentType parentType, int parentId, int userId)
+        public async Task<bool> CanModifyResource(ResourceParentType parentType, int userId, int courseId)
         {
             var currentUser = await _db.SysUsers.FindAsync(userId);
             if (currentUser == null) return false;
 
+            if (currentUser.Roles.Contains(UserRoles.Admin)) return true;
+
+            if (currentUser.Roles.Contains(UserRoles.Professor))
+            {
+                /**
+                 * Professor might also be student
+                 * Check resource parent type
+                 */
+                if (parentType != ResourceParentType.AssignmentSubmission || parentType != ResourceParentType.ExamSubmission)
+                {
+                    await _db.Entry(currentUser).Collection(u => u.ProfessorCourses).LoadAsync();
+
+                    // if the resource that is beign created is not a submission check if the professor is in fact professor of said course
+                    if (currentUser.ProfessorCourses.Any(course => course.Id == courseId))
+                    {
+                        return true;
+                    } else return false;
+                }
+                    
+                // Professor is making a submission.
+                return true;
+            }
+
             if (currentUser.Roles.Contains(UserRoles.Student))
             {
+                // check if student is trying to submit an assignment or not
                 if (parentType != ResourceParentType.AssignmentSubmission || parentType != ResourceParentType.ExamSubmission)
                     return false;
                 return true;
             }
-            /* TODO */
-            /* ADD PERMISSIONS FOR PROFESSOR AND ADMIN, TOO LAZY TOO DO IT NOW*/
-            return true;
+            return false;
 
         }
 
