@@ -14,6 +14,5 @@ namespace SetelaServerV3._1.Domain.Entities
         public int SysUserId { get; set; }
         public SysUser SysUser { get; set; }
         public int CourseId { get; set; }
-        public int OwnerId { get; set; }
     }
 }

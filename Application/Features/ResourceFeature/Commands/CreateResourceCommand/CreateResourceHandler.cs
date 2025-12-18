@@ -37,6 +37,8 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Create
             };
 
             _db.Resources.Add(newResource);
+            await _db.SaveChangesAsync(cancellationToken);
+
             return Result<Resource>.Ok(newResource);
         }
 

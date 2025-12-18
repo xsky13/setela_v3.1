@@ -21,13 +21,6 @@ namespace SetelaServerV3._1.Infrastructure.Data
                 .HasForeignKey(r => r.CourseId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<Resource>()
-                .HasOne<SysUser>()
-                .WithMany()
-                .HasForeignKey(r => r.OwnerId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.NoAction);
         }
 
        

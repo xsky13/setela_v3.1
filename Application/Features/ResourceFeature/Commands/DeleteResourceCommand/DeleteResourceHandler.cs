@@ -13,7 +13,7 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Delete
             var resource = await _db.Resources.FindAsync([command.ResourceId], cancellationToken);
             if (resource == null) return Result<object>.Fail("El recurso especificado no existe");
 
-            if (!await _userPermissions.CanModifyResource(resource.ParentType, command.UserId, resource.CourseId, resource.OwnerId))
+            if (!await _userPermissions.CanModifyResource(resource.ParentType, command.UserId, resource.CourseId, resource.SysUserId))
                 return Result<object>.Fail("No puede modificar este recurso", 403);
 
             _db.Resources.Remove(resource);

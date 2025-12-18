@@ -14,7 +14,7 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Update
             var resource = await _db.Resources.FindAsync([command.ResourceId], cancellationToken);
             if (resource == null) return Result<Resource>.Fail("El recurso no existe");
 
-            if (!await _userPermissions.CanModifyResource(resource.ParentType, command.UserId, resource.CourseId, resource.OwnerId))
+            if (!await _userPermissions.CanModifyResource(resource.ParentType, command.UserId, resource.CourseId, resource.SysUserId))
                 return Result<Resource>.Fail("No puede modificar este recurso", 403);
 
 
@@ -28,6 +28,8 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Update
 
             if (command.Url != null) resource.Url = command.Url;
             if (command.LinkText != null) resource.LinkText = command.LinkText;
+
+            await _db.SaveChangesAsync(cancellationToken);
 
             return Result<Resource>.Ok(resource);
         }

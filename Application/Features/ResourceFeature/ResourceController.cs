@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SetelaServerV3._1.Application.Features.ResourceFeature.Commands.CreateResourceCommand;
@@ -29,7 +30,8 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature
                 Type = request.Type,
                 ParentType = request.ParentType,
                 ParentId = request.ParentId,
-                UserId = int.Parse(userId)
+                UserId = int.Parse(userId),
+                CourseId = request.CourseId
             });
             return response.ToActionResult();
         }
