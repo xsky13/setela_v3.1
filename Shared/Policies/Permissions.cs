@@ -68,7 +68,7 @@ namespace SetelaServerV3._1.Shared.Policies
             }
         }
 
-        public async Task<bool> CanModifyResource(ResourceParentType parentType, int userId, int courseId)
+        public async Task<bool> CanModifyResource(ResourceParentType parentType, int userId, int courseId, int? ownerId)
         {
             var currentUser = await _db.SysUsers.FindAsync(userId);
             if (currentUser == null) return false;
@@ -100,8 +100,19 @@ namespace SetelaServerV3._1.Shared.Policies
             {
                 // check if student is trying to submit an assignment or not
                 if (parentType != ResourceParentType.AssignmentSubmission || parentType != ResourceParentType.ExamSubmission)
+                {
                     return false;
-                return true;
+                } else
+                {
+                    // user is creating a resource
+                    if (ownerId != null) return true;
+                    else
+                    {
+                        // user is modifying resource
+                        if (userId != ownerId) return false;
+                        return true;
+                    }
+                }
             }
             return false;
 

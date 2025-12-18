@@ -11,14 +11,10 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Update
     {
         public async Task<Result<Resource>> Handle(UpdateResourceCommand command, CancellationToken cancellationToken)
         {
-            /* 
-                * TODO: 
-                * ADD PERMISSIONS FOR UPDATING RESOURCES, PREFERABLY USING OWNER ID 
-            */
             var resource = await _db.Resources.FindAsync([command.ResourceId], cancellationToken);
             if (resource == null) return Result<Resource>.Fail("El recurso no existe");
 
-            if (!await _userPermissions.CanModifyResource(resource.ParentType, command.UserId, resource.CourseId))
+            if (!await _userPermissions.CanModifyResource(resource.ParentType, command.UserId, resource.CourseId, resource.OwnerId))
                 return Result<Resource>.Fail("No puede modificar este recurso", 403);
 
 
