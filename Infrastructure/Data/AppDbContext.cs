@@ -10,6 +10,7 @@ namespace SetelaServerV3._1.Infrastructure.Data
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<TopicSeparator> TopicSeparators { get; set; }
         public DbSet<Resource> Resources { get; set; }
+        public DbSet<Module> Modules { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
