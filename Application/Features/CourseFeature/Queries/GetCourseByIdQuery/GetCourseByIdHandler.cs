@@ -20,7 +20,7 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature.Queries.GetCourse
 
             if (course == null)
                 return Result<CourseDTO>.Fail("Este curso no existe", 404);
-
+            
             return Result<CourseDTO>.Ok(course);
         }
     }

@@ -10,8 +10,5 @@ namespace SetelaServerV3._1.Domain.Entities
         public List<Enrollment> Enrollments { get; set; } = [];
         public List<SysUser> Professors { get; set; } = [];
         public List<TopicSeparator> TopicSeparators { get; set; } = [];
-
-        [NotMapped]
-        public List<Resource> Resources { get; set; } = [];
     }
 }

@@ -8,8 +8,5 @@ namespace SetelaServerV3._1.Domain.Entities
         public string Title { get; set; }
         public int CourseId { get; set; }
         public Course Course { get; set; }
-
-        [NotMapped]
-        public List<Resource> Resources { get; set; } = [];
     }
 }
