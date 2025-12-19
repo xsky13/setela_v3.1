@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using SetelaServerV3._1;
 using SetelaServerV3._1.Application.Features.Auth.Config;
 using SetelaServerV3._1.Application.Features.CourseFeature;
+using SetelaServerV3._1.Application.Features.ModuleFeature;
 using SetelaServerV3._1.Application.Features.TopicSeparatorFeature;
 using SetelaServerV3._1.Application.Features.UserFeature;
 using SetelaServerV3._1.Infrastructure.Data;
@@ -52,7 +53,8 @@ builder.Services.AddAutoMapper(
     typeof(GeneralMappingProfile).Assembly,
     typeof(CourseMappingProfile).Assembly, 
     typeof(UserMappingProfile).Assembly,
-    typeof(TopicSeparatorMappingProfile).Assembly);
+    typeof(TopicSeparatorMappingProfile).Assembly,
+    typeof(ModuleMappingProfile).Assembly);
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
