@@ -15,7 +15,7 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature.Commands.UpdateCo
             var course = await _db.Courses.FirstOrDefaultAsync(course => course.Id == command.Id, cancellationToken);
             if (course == null) return Result<Course>.Fail("El curso no existe");
 
-            var canEditCourse = await _permissions.CanEditCourse(command.UserId, course);
+            var canEditCourse = await _permissions.CanEditCourse(command.UserId, course.Id);
             if (!canEditCourse) return Result<Course>.Fail("No autorizado", 403);
 
             course.Title = command.Title;

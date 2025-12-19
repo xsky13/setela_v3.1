@@ -2,7 +2,6 @@
 using SetelaServerV3._1.Domain.Entities;
 using SetelaServerV3._1.Domain.Enums;
 using SetelaServerV3._1.Infrastructure.Data;
-using System.Threading.Tasks;
 
 namespace SetelaServerV3._1.Shared.Policies
 {
@@ -27,7 +26,8 @@ namespace SetelaServerV3._1.Shared.Policies
 
         public async Task<bool> CanEditCourse(int userId, Course course)
         {
-            var user = await _db.SysUsers.FirstOrDefaultAsync(user => user.Id == userId);
+            var user = await _db.SysUsers
+                .FirstOrDefaultAsync(user => user.Id == userId);
             if (user == null || course == null) return false;
 
             bool isAdmin = user.Roles.Contains(UserRoles.Admin);
@@ -38,24 +38,12 @@ namespace SetelaServerV3._1.Shared.Policies
 
         public async Task<bool> CanEditCourse(int userId, int courseId)
         {
-            var user = await _db.SysUsers.FirstOrDefaultAsync(user => user.Id == userId);
-            var course = await _db.Courses.FirstOrDefaultAsync(course => course.Id == courseId);
-            if (user == null || course == null) return false;
-
-            bool isAdmin = user.Roles.Contains(UserRoles.Admin);
-            bool isAssignedProfessor = course.Professors.Any(p => p.Id == user.Id);
-
-            return isAdmin || isAssignedProfessor;
-        }
-
-        public bool CanEditCourse(SysUser user, Course course)
-        {
-            if (user == null || course == null) return false;
-
-            bool isAdmin = user.Roles.Contains(UserRoles.Admin);
-            bool isAssignedProfessor = course.Professors.Any(p => p.Id == user.Id);
-
-            return isAdmin || isAssignedProfessor;
+            return await _db.SysUsers
+                .Where(u => u.Id == userId)
+                .AnyAsync(u =>
+                    u.Roles.Contains(UserRoles.Admin) ||
+                    u.ProfessorCourses.Any(c => c.Id == courseId)
+                );
         }
 
         public bool CanEditUser(int currentUserId, int userToChangeId, List<UserRoles> currentUserRoles)
