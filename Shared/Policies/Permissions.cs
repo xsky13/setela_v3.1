@@ -27,6 +27,7 @@ namespace SetelaServerV3._1.Shared.Policies
         public async Task<bool> CanEditCourse(int userId, int courseId)
         {
             return await _db.SysUsers
+                .Include(u => u.ProfessorCourses)
                 .Where(u => u.Id == userId)
                 .AnyAsync(u =>
                     u.Roles.Contains(UserRoles.Admin) ||
