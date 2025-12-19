@@ -24,18 +24,6 @@ namespace SetelaServerV3._1.Shared.Policies
             return false;
         }
 
-        public async Task<bool> CanEditCourse(int userId, Course course)
-        {
-            var user = await _db.SysUsers
-                .FirstOrDefaultAsync(user => user.Id == userId);
-            if (user == null || course == null) return false;
-
-            bool isAdmin = user.Roles.Contains(UserRoles.Admin);
-            bool isAssignedProfessor = course.Professors.Any(p => p.Id == user.Id);
-
-            return isAdmin || isAssignedProfessor;
-        }
-
         public async Task<bool> CanEditCourse(int userId, int courseId)
         {
             return await _db.SysUsers
