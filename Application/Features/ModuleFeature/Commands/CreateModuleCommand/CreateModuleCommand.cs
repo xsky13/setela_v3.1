@@ -7,6 +7,7 @@ namespace SetelaServerV3._1.Application.Features.ModuleFeature.Commands.CreateMo
     public class CreateModuleCommand : IRequest<Result<ModuleSimpleDTO>>
     {
         public int CourseId { get; set; }
+        public int UserId { get; set; }
         public string Title { get; set; }
         public string TextContent { get; set; }
     }

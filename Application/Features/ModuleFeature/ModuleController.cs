@@ -18,9 +18,18 @@ namespace SetelaServerV3._1.Application.Features.ModuleFeature
     {
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<ModuleSimpleDTO>> CreateModule([FromBody] CreateModuleCommand command)
+        public async Task<ActionResult<ModuleSimpleDTO>> CreateModule([FromBody] CreateModuleRequestDTO request)
         {
-            var response = await _mediator.Send(command);
+            ClaimsPrincipal currentUser = HttpContext.User;
+            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            var response = await _mediator.Send(new CreateModuleCommand
+            { 
+                CourseId = request.CourseId,
+                Title = request.Title,
+                TextContent = request.TextContent,
+                UserId = int.Parse(userId)
+            });
             return response.ToActionResult();
         }
 
