@@ -11,6 +11,7 @@ using SetelaServerV3._1.Application.Features.TopicSeparatorFeature;
 using SetelaServerV3._1.Application.Features.UserFeature;
 using SetelaServerV3._1.Infrastructure.Data;
 using SetelaServerV3._1.Shared.Common;
+using SetelaServerV3._1.Shared.Common.Services;
 using SetelaServerV3._1.Shared.Policies;
 using System.Text;
 
@@ -42,7 +43,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 var connectionString = Environment.GetEnvironmentVariable("DB_CONN");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+
 builder.Services.AddScoped<IPermissionHandler, Permissions>();
+builder.Services.AddScoped<MaxDisplayOrder>();
 
 builder.Services.AddAuthorization();
 

@@ -4,12 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using SetelaServerV3._1.Domain.Entities;
 using SetelaServerV3._1.Infrastructure.Data;
 using SetelaServerV3._1.Shared.Common.DTO;
+using SetelaServerV3._1.Shared.Common.Services;
 using SetelaServerV3._1.Shared.Policies;
 using SetelaServerV3._1.Shared.Utilities;
 
 namespace SetelaServerV3._1.Application.Features.ModuleFeature.Commands.CreateModuleCommand
 {
-    public class CreateModuleHandler(AppDbContext _db, IMapper _mapper, IPermissionHandler _userPermissions) : IRequestHandler<CreateModuleCommand, Result<ModuleSimpleDTO>>
+    public class CreateModuleHandler(AppDbContext _db, IMapper _mapper, IPermissionHandler _userPermissions, MaxDisplayOrder maxDisplayOrder) : IRequestHandler<CreateModuleCommand, Result<ModuleSimpleDTO>>
     {
         public async Task<Result<ModuleSimpleDTO>> Handle(CreateModuleCommand command, CancellationToken cancellationToken)
         {
@@ -23,7 +24,8 @@ namespace SetelaServerV3._1.Application.Features.ModuleFeature.Commands.CreateMo
                 Title = command.Title,
                 TextContent = command.TextContent,
                 CreationDate = DateTime.UtcNow,
-                CourseId = command.CourseId
+                CourseId = command.CourseId,
+                DisplayOrder = await maxDisplayOrder.GetNext(command.CourseId, cancellationToken)
             };
 
             _db.Modules.Add(module);

@@ -3,12 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using SetelaServerV3._1.Domain.Entities;
 using SetelaServerV3._1.Domain.Enums;
 using SetelaServerV3._1.Infrastructure.Data;
+using SetelaServerV3._1.Shared.Common.Services;
 using SetelaServerV3._1.Shared.Policies;
 using SetelaServerV3._1.Shared.Utilities;
 
 namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.CreateResourceCommand
 {
-    public class CreateResourceHandler(AppDbContext _db, IPermissionHandler _userPermissions) : IRequestHandler<CreateResourceCommand, Result<Resource>>
+    public class CreateResourceHandler(AppDbContext _db, IPermissionHandler _userPermissions, MaxDisplayOrder maxDisplayOrder) : IRequestHandler<CreateResourceCommand, Result<Resource>>
     {
         public async Task<Result<Resource>> Handle(CreateResourceCommand command, CancellationToken cancellationToken)
         {
@@ -33,7 +34,8 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Create
                 ParentId = command.ParentId,
                 CreationDate = DateTime.UtcNow,
                 SysUserId = command.UserId,
-                CourseId = command.CourseId
+                CourseId = command.CourseId,
+                DisplayOrder = await maxDisplayOrder.GetNext(command.CourseId, cancellationToken)
             };
 
             _db.Resources.Add(newResource);
