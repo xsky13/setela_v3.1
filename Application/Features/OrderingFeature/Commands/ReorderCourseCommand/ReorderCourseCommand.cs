@@ -7,7 +7,6 @@ namespace SetelaServerV3._1.Application.Features.OrderingFeature.Commands.Reorde
     public class ReorderCourseCommand : IRequest<Result<object>>
     {
         public int UserId { get; set; }
-        public int CourseId { get; set; }
         public ReorderRequestDTO ReorderItems { get; set; }
     }
 }

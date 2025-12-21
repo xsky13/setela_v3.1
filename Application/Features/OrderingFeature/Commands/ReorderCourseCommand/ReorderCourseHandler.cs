@@ -11,12 +11,12 @@ namespace SetelaServerV3._1.Application.Features.OrderingFeature.Commands.Reorde
     {
         public async Task<Result<object>> Handle(ReorderCourseCommand command, CancellationToken cancellationToken)
         {
-            if (!await _userPermissions.CanEditCourse(command.UserId, command.CourseId))
+            if (!await _userPermissions.CanEditCourse(command.UserId, command.ReorderItems.CourseId))
                 return Result<object>.Fail("No tiene permisos para editar este curso");
 
             var topicOrderMap = command.ReorderItems.TopicSeparators.ToDictionary(x => x.Id, x => x.NewOrder);
             var topicSeparators = await _db.TopicSeparators
-                .Where(ts => topicOrderMap.Keys.Contains(ts.Id) && ts.CourseId == command.CourseId)
+                .Where(ts => topicOrderMap.Keys.Contains(ts.Id) && ts.CourseId == command.ReorderItems.CourseId)
                 .ToListAsync(cancellationToken);
 
             foreach (var topicSeparator in topicSeparators)
@@ -25,7 +25,7 @@ namespace SetelaServerV3._1.Application.Features.OrderingFeature.Commands.Reorde
 
             var moduleOrderMap = command.ReorderItems.Modules.ToDictionary(x => x.Id, x => x.NewOrder);
             var modules = await _db.Modules
-                .Where(module => moduleOrderMap.Keys.Contains(module.Id) && module.CourseId == command.CourseId)
+                .Where(module => moduleOrderMap.Keys.Contains(module.Id) && module.CourseId == command.ReorderItems.CourseId)
                 .ToListAsync(cancellationToken);
 
             foreach (var module in modules)
