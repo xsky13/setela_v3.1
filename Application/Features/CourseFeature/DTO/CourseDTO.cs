@@ -12,6 +12,7 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature.DTO
         public List<UserForCourseDTO> Professors { get; set; } = [];
         public List<TopicDTO> TopicSeparators { get; set; } = [];
         public List<ModuleSimpleDTO> Modules { get; set; } = [];
+        public List<AssignmentSimpleDTO> Assignments { get; set; } = [];
         public List<CourseResourceDTO>? Resources { get; set; } = [];
 
     }
