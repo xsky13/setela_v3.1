@@ -11,6 +11,7 @@ namespace SetelaServerV3._1.Infrastructure.Data
         public DbSet<TopicSeparator> TopicSeparators { get; set; }
         public DbSet<Resource> Resources { get; set; }
         public DbSet<Module> Modules { get; set; }
+        public DbSet<Assignment> Assignments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
