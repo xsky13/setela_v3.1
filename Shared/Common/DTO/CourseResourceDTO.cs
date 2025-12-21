@@ -7,5 +7,6 @@
         public string? LinkText { get; set; }
         public DateTime CreationDate { get; set; }
         public UserSimpleDTO SysUser { get; set; }
+        public int DisplayOrder { get; set; }
     }
 }

@@ -8,5 +8,6 @@
         public bool Visible { get; set; }
         public DateTime CreationDate { get; set; }
         public int CourseId { get; set; }
+        public int DisplayOrder { get; set; }
     }
 }

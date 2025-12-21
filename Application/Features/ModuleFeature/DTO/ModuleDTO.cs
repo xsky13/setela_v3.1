@@ -13,6 +13,7 @@ namespace SetelaServerV3._1.Application.Features.ModuleFeature.DTO
         public DateTime CreationDate { get; set; }
         public int CourseId { get; set; }
         public CourseSimpleDTO Course { get; set; }
+        public int DisplayOrder { get; set; }
 
         public List<CourseResourceDTO>? Resources { get; set; }
     }

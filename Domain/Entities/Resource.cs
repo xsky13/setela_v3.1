@@ -1,8 +1,9 @@
 ﻿using SetelaServerV3._1.Domain.Enums;
+using SetelaServerV3._1.Shared.Common.Interfaces;
 
 namespace SetelaServerV3._1.Domain.Entities
 {
-    public class Resource
+    public class Resource : IOrderable
     {
         public int Id { get; set; }
         public string Url { get; set; }
@@ -14,5 +15,7 @@ namespace SetelaServerV3._1.Domain.Entities
         public int SysUserId { get; set; }
         public SysUser SysUser { get; set; }
         public int CourseId { get; set; }
+        public int DisplayOrder { get; set; }
+
     }
 }
