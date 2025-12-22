@@ -11,11 +11,12 @@ namespace SetelaServerV3._1.Application.Features.AssignmentFeature.Commands.Upda
     {
         public async Task<Result<AssignmentDTO>> Handle(UpdateAssignmentCommand command, CancellationToken cancellationToken)
         {
-            if (!await _userPermissions.CanEditCourse(command.UserId, command.Assignment.CourseId))
-                return Result<AssignmentDTO>.Fail("No puede modificar trabajos practicos en este curso", 403);
 
             var assignment = await _db.Assignments.FindAsync([command.AssignmentId], cancellationToken);
             if (assignment == null) return Result<AssignmentDTO>.Fail("El trabajo practico no existe");
+
+            if (!await _userPermissions.CanEditCourse(command.UserId, assignment.CourseId))
+                return Result<AssignmentDTO>.Fail("No puede modificar trabajos practicos en este curso", 403);
 
             if (command.Assignment.Title != null) assignment.Title = command.Assignment.Title;
             if (command.Assignment.TextContent != null) assignment.TextContent = command.Assignment.TextContent;
