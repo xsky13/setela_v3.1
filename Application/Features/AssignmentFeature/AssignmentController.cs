@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SetelaServerV3._1.Application.Features.AssignmentFeature.Commands.CreateAssignmentCommand;
+using SetelaServerV3._1.Application.Features.AssignmentFeature.Commands.UpdateAssignmentCommand;
 using SetelaServerV3._1.Application.Features.AssignmentFeature.DTO;
 using SetelaServerV3._1.Domain.Entities;
 using SetelaServerV3._1.Shared.Utilities;
@@ -21,6 +22,22 @@ namespace SetelaServerV3._1.Application.Features.AssignmentFeature
             string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             var response = await _mediator.Send(new CreateAssignmentCommand { UserId = int.Parse(userId), Assignment = request });
+            return response.ToActionResult();
+        }
+
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task<ActionResult<AssignmentDTO>> UpdateAssignment([FromBody] UpdateAssignmentRequestDTO request, int id)
+        {
+            ClaimsPrincipal currentUser = HttpContext.User;
+            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            var response = await _mediator.Send(new UpdateAssignmentCommand { 
+                UserId = int.Parse(userId), 
+                AssignmentId = id,
+                Assignment = request 
+            });
+
             return response.ToActionResult();
         }
     }

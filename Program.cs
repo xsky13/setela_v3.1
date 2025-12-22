@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SetelaServerV3._1;
+using SetelaServerV3._1.Application.Features.AssignmentFeature;
 using SetelaServerV3._1.Application.Features.Auth.Config;
 using SetelaServerV3._1.Application.Features.CourseFeature;
 using SetelaServerV3._1.Application.Features.ModuleFeature;
@@ -61,7 +62,8 @@ builder.Services.AddAutoMapper(
     typeof(CourseMappingProfile).Assembly, 
     typeof(UserMappingProfile).Assembly,
     typeof(TopicSeparatorMappingProfile).Assembly,
-    typeof(ModuleMappingProfile).Assembly);
+    typeof(ModuleMappingProfile).Assembly,
+    typeof(AssignmentMappingProfile).Assembly);
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
