@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SetelaServerV3._1.Application.Features.AssignmentFeature.Commands.CreateAssignmentCommand;
+using SetelaServerV3._1.Application.Features.AssignmentFeature.Commands.DeleteAssignmentCommand;
 using SetelaServerV3._1.Application.Features.AssignmentFeature.Commands.UpdateAssignmentCommand;
 using SetelaServerV3._1.Application.Features.AssignmentFeature.DTO;
 using SetelaServerV3._1.Domain.Entities;
@@ -32,10 +33,27 @@ namespace SetelaServerV3._1.Application.Features.AssignmentFeature
             ClaimsPrincipal currentUser = HttpContext.User;
             string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
-            var response = await _mediator.Send(new UpdateAssignmentCommand { 
-                UserId = int.Parse(userId), 
+            var response = await _mediator.Send(new UpdateAssignmentCommand
+            {
+                UserId = int.Parse(userId),
                 AssignmentId = id,
-                Assignment = request 
+                Assignment = request
+            });
+
+            return response.ToActionResult();
+        }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<object>> DeleteAssignment(int id)
+        {
+            ClaimsPrincipal currentUser = HttpContext.User;
+            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            var response = await _mediator.Send(new DeleteAssignmentCommand
+            {
+                UserId = int.Parse(userId),
+                AssignmentId = id,
             });
 
             return response.ToActionResult();
