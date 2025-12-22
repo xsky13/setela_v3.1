@@ -17,5 +17,6 @@ namespace SetelaServerV3._1.Application.Features.AssignmentFeature.DTO
         public int CourseId { get; set; }
         public CourseSimpleDTO Course { get; set; }
         public List<CourseResourceDTO> Resources { get; set; } = [];
+        public List<AssignmentSubmissionSimpleDTO> AssignmentSubmissions { get; set; }
     }
 }
