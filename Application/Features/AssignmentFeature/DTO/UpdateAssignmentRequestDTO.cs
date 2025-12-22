@@ -2,7 +2,6 @@
 {
     public class UpdateAssignmentRequestDTO
     {
-        public int CourseId { get; set; }
         public string? Title { get; set; }
         public string? TextContent { get; set; }
         public int? MaxGrade { get; set; }
