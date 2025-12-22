@@ -15,5 +15,6 @@ namespace SetelaServerV3._1.Domain.Entities
         public int DisplayOrder { get; set; }
         public int CourseId { get; set; }
         public Course Course { get; set; }
+        public List<AssignmentSubmission> AssignmentSubmissions { get; set; }
     }
 }
