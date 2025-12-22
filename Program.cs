@@ -42,6 +42,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 
 var connectionString = Environment.GetEnvironmentVariable("DB_CONN");
+// Program.cs
+//builder.Services.AddDbContextFactory<AppDbContext>(options =>
+    //options.UseNpgsql(connectionString));
+
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
 builder.Services.AddScoped<IPermissionHandler, Permissions>();
