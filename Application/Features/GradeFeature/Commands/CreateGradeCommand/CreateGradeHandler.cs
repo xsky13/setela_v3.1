@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature.DTO;
 using SetelaServerV3._1.Application.Features.GradeFeature.DTO;
 using SetelaServerV3._1.Domain.Entities;
 using SetelaServerV3._1.Domain.Enums;
 using SetelaServerV3._1.Infrastructure.Data;
+using SetelaServerV3._1.Shared.Common.Interfaces;
 using SetelaServerV3._1.Shared.Policies;
 using SetelaServerV3._1.Shared.Utilities;
 
@@ -17,11 +20,16 @@ namespace SetelaServerV3._1.Application.Features.GradeFeature.Commands.CreateGra
             if (!Enum.TryParse(command.Grade.ParentType, true, out GradeParentType parentGradeType))
                 return Result<GradeDTO>.Fail("Incorrect grade parent type");
 
-            if (!await ParentExistsAsync(parentGradeType, command.Grade.ParentId, cancellationToken))
+            var parent = await ParentExistsAsync(parentGradeType, command.Grade.ParentId, cancellationToken);
+            if (parent == null)
                 return Result<GradeDTO>.Fail("La entidad no existe", 404);
 
             if (!await _userPermissions.CanEditCourse(command.UserId, command.Grade.CourseId))
                 return Result<GradeDTO>.Fail("No tiene permisos para poner nota.", 403);
+
+            // check if already exists
+            if (parent.Grade != null)
+                return Result<GradeDTO>.Fail("Ya hay nota.");
 
             var grade = new Grade
             { 
@@ -37,12 +45,14 @@ namespace SetelaServerV3._1.Application.Features.GradeFeature.Commands.CreateGra
             return Result<GradeDTO>.Ok(_mapper.Map<GradeDTO>(grade));
         }
 
-        private async Task<bool> ParentExistsAsync(GradeParentType parentType, int parentId, CancellationToken cancellationToken)
+        private async Task<IGradeable?> ParentExistsAsync(GradeParentType parentType, int parentId, CancellationToken cancellationToken)
         {
             return parentType switch
             {
-                GradeParentType.AssignmentSubmission => await _db.AssignmentSubmissions.AnyAsync(m => m.Id == parentId, cancellationToken),
-                _ => false,
+                GradeParentType.AssignmentSubmission => await _db.AssignmentSubmissions
+                    .ProjectTo<AssignmentSubmissionDTO>(_mapper.ConfigurationProvider)
+                    .FirstOrDefaultAsync(m => m.Id == parentId, cancellationToken),
+                _ => null,
             };
         }
     }
