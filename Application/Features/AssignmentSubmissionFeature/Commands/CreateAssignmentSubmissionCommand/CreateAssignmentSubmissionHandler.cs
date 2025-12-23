@@ -38,6 +38,7 @@ namespace SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature.Com
             {
                 TextContent = command.AssignmentSubmission.TextContent,
                 CreationDate = DateTime.UtcNow,
+                LastUpdateDate = DateTime.UtcNow,
                 SysUserId = command.UserId,
                 AssignmentId = command.AssignmentSubmission.AssignmentId
             };
