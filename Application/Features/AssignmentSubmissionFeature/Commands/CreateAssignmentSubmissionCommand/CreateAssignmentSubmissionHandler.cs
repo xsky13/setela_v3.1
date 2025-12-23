@@ -14,9 +14,12 @@ namespace SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature.Com
         {
             var assignment = await _db.Assignments
                 .Where(a => a.Id == command.AssignmentSubmission.AssignmentId)
-                .Select(a => new { a.DueDate })
+                .Select(a => new { a.Closed })
                 .FirstOrDefaultAsync(cancellationToken);
             if (assignment == null) return Result<AssignmentSubmissionDTO>.Fail("El trabajo practico no existe.");
+
+            if (assignment.Closed)
+                return Result<AssignmentSubmissionDTO>.Fail("El trabajo practico esta cerrado");
 
             //var dueDate = assignment.DueDate.Kind == DateTimeKind.Unspecified
             //    ? DateTime.SpecifyKind(assignment.DueDate, DateTimeKind.Utc)
