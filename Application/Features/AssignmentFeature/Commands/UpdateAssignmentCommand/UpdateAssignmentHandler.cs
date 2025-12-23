@@ -24,6 +24,7 @@ namespace SetelaServerV3._1.Application.Features.AssignmentFeature.Commands.Upda
             if (command.Assignment.Weight.HasValue) assignment.Weight = command.Assignment.Weight.Value;
             if (command.Assignment.DueDate.HasValue) assignment.DueDate = command.Assignment.DueDate.Value;
             if (command.Assignment.Visible.HasValue) assignment.Visible = command.Assignment.Visible.Value;
+            if (command.Assignment.Closed.HasValue) assignment.Closed = command.Assignment.Closed.Value;
 
             await _db.SaveChangesAsync(cancellationToken);
             return Result<AssignmentDTO>.Ok(_mapper.Map<AssignmentDTO>(assignment));

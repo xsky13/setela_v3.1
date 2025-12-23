@@ -13,6 +13,7 @@ namespace SetelaServerV3._1.Application.Features.AssignmentFeature.DTO
         public int MaxGrade { get; set; }
         public int Weight { get; set; }
         public bool Visible { get; set; }
+        public bool Closed { get; set; }
         public int DisplayOrder { get; set; }
         public int CourseId { get; set; }
         public CourseSimpleDTO Course { get; set; }

@@ -12,6 +12,7 @@ namespace SetelaServerV3._1.Domain.Entities
         public int MaxGrade { get; set; }
         public int Weight { get; set; }
         public bool Visible { get; set; }
+        public bool Closed { get; set; } = false;
         public int DisplayOrder { get; set; }
         public int CourseId { get; set; }
         public Course Course { get; set; }
