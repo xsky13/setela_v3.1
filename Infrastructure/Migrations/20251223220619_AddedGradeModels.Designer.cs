@@ -2,18 +2,21 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SetelaServerV3._1.Infrastructure.Data;
 
 #nullable disable
 
-namespace SetelaServerV3._1.Migrations
+namespace SetelaServerV3._1.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251223220619_AddedGradeModels")]
+    partial class AddedGradeModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,33 +169,6 @@ namespace SetelaServerV3._1.Migrations
                     b.HasIndex("SysUserId");
 
                     b.ToTable("Enrollments");
-                });
-
-            modelBuilder.Entity("SetelaServerV3._1.Domain.Entities.Grade", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ParentId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ParentType")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("SysUserId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Value")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SysUserId");
-
-                    b.ToTable("Grades");
                 });
 
             modelBuilder.Entity("SetelaServerV3._1.Domain.Entities.Module", b =>
@@ -389,17 +365,6 @@ namespace SetelaServerV3._1.Migrations
                         .IsRequired();
 
                     b.Navigation("Course");
-
-                    b.Navigation("SysUser");
-                });
-
-            modelBuilder.Entity("SetelaServerV3._1.Domain.Entities.Grade", b =>
-                {
-                    b.HasOne("SetelaServerV3._1.Domain.Entities.SysUser", "SysUser")
-                        .WithMany()
-                        .HasForeignKey("SysUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("SysUser");
                 });

@@ -14,6 +14,7 @@ namespace SetelaServerV3._1.Infrastructure.Data
         public DbSet<Module> Modules { get; set; }
         public DbSet<Assignment> Assignments { get; set; }
         public DbSet<AssignmentSubmission> AssignmentSubmissions { get; set; }
+        public DbSet<Grade> Grades { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
