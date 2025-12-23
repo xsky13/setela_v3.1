@@ -25,6 +25,15 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Create
             if (!await _userPermissions.CanModifyResource(parentResourceType, command.UserId, command.CourseId))
                 return Result<Resource>.Fail("No tiene permisos para crear recursos", 403);
 
+
+            // if this is an assignment submission update the last updated timestamp
+            if (parentResourceType == ResourceParentType.AssignmentSubmission)
+            {
+                await _db.AssignmentSubmissions
+                    .Where(a => a.Id == command.ParentId)
+                    .ExecuteUpdateAsync(s => s.SetProperty(b => b.LastUpdateDate, DateTime.UtcNow), cancellationToken);
+            }
+
             var newResource = new Resource
             { 
                 Url = command.Url,
