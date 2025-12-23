@@ -5,6 +5,7 @@ using SetelaServerV3._1.Application.Features.AssignmentFeature.Commands.CreateAs
 using SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature.Commands.CreateAssignmentSubmissionCommand;
 using SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature.Commands.UpdateAssignmentSubmissionCommand;
 using SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature.DTO;
+using SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature.Queries.GetAssignmentSubmissionByIdQuery;
 using SetelaServerV3._1.Shared.Utilities;
 using System.Security.Claims;
 
@@ -14,6 +15,14 @@ namespace SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature
     [Route("api/[controller]")]
     public class AssignmentSubmissionController(IMediator _mediator) : ControllerBase
     {
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<AssignmentSubmissionDTO>> GetById(int id)
+        {
+            var response = await _mediator.Send(new GetAssignmentSubmissionByIdQuery { AssignmentSubmissionId = id });
+            return response.ToActionResult();
+        }
+
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<AssignmentSubmissionDTO>> Create([FromBody] CreateAssignmentSubmissionRequestDTO request)
