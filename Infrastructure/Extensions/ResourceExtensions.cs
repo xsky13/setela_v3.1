@@ -13,13 +13,13 @@ namespace SetelaServerV3._1.Infrastructure.Extensions
     public static class ResourceExtensions
     {
         public static async Task<T?> LoadResources<T>(
-            this IQueryable<T> query, 
+            this Task<T?> task, 
             AppDbContext _db,
             IMapper _mapper,
             ResourceParentType parentType,
             CancellationToken cancellationToken = default) where T : class, IResourceable
         {
-            var dto = await query.FirstOrDefaultAsync(cancellationToken);
+            var dto = await task;
             if (dto == null) return null;
 
             dto.Resources = await _db.Resources

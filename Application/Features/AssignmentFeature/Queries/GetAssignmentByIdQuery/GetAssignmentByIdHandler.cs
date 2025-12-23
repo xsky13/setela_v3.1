@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SetelaServerV3._1.Application.Features.AssignmentFeature.DTO;
 using SetelaServerV3._1.Infrastructure.Data;
 using SetelaServerV3._1.Infrastructure.Extensions;
@@ -15,6 +16,7 @@ namespace SetelaServerV3._1.Application.Features.AssignmentFeature.Queries.GetAs
             var assignment = await _db.Assignments
                 .Where(a => a.Id == query.AssignmentId)
                 .ProjectTo<AssignmentDTO>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(cancellationToken)
                 .LoadResources(_db, _mapper, Domain.Enums.ResourceParentType.Assignment, cancellationToken);
 
             if (assignment == null) return Result<AssignmentDTO>.Fail("El trabajo practico no existe", 404);

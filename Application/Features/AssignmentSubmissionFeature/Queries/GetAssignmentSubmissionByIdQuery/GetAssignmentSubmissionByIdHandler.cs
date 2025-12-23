@@ -16,7 +16,9 @@ namespace SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature.Que
             var submission = await _db.AssignmentSubmissions
                 .Where(a => a.Id == query.AssignmentSubmissionId)
                 .ProjectTo<AssignmentSubmissionDTO>(_mapper.ConfigurationProvider)
-                .LoadResources(_db, _mapper, Domain.Enums.ResourceParentType.AssignmentSubmission, cancellationToken);
+                .FirstOrDefaultAsync(cancellationToken)
+                .LoadResources(_db, _mapper, Domain.Enums.ResourceParentType.AssignmentSubmission, cancellationToken)
+                .LoadGrades(_db, _mapper, Domain.Enums.GradeParentType.AssignmentSubmission, cancellationToken);
 
             if (submission == null) return Result<AssignmentSubmissionDTO>.Fail("El trabajo practico no existe.");
 

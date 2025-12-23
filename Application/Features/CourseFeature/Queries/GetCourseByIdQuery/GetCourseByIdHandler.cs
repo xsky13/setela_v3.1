@@ -16,6 +16,7 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature.Queries.GetCourse
             var course = await _db.Courses
                 .Where(c => c.Id == query.CourseId)
                 .ProjectTo<CourseDTO>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(cancellationToken)
                 .LoadResources(_db, _mapper, Domain.Enums.ResourceParentType.Course, cancellationToken);
 
             if (course == null)
