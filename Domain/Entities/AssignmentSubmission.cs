@@ -5,6 +5,7 @@
         public int Id { get; set; }
         public string? TextContent { get; set; }
         public DateTime CreationDate { get; set; }
+        public DateTime LastUpdateDate { get; set; }
         public int SysUserId { get; set; }
         public SysUser SysUser { get; set; }
         public int AssignmentId { get; set; }

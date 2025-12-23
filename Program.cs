@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SetelaServerV3._1;
 using SetelaServerV3._1.Application.Features.AssignmentFeature;
+using SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature;
 using SetelaServerV3._1.Application.Features.Auth.Config;
 using SetelaServerV3._1.Application.Features.CourseFeature;
 using SetelaServerV3._1.Application.Features.ModuleFeature;
@@ -63,6 +64,7 @@ builder.Services.AddAutoMapper(
     typeof(UserMappingProfile).Assembly,
     typeof(TopicSeparatorMappingProfile).Assembly,
     typeof(ModuleMappingProfile).Assembly,
+    typeof(AssignmentSubmissionMappingProfile).Assembly,
     typeof(AssignmentMappingProfile).Assembly);
 builder.Services.AddControllers();
 
