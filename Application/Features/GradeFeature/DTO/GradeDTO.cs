@@ -12,5 +12,6 @@ namespace SetelaServerV3._1.Application.Features.GradeFeature.DTO
         public int ParentId { get; set; }
         public int SysUserId { get; set; }
         public UserSimpleDTO SysUser { get; set; }
+        public int CourseId { get; set; }
     }
 }

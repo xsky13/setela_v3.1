@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SetelaServerV3._1.Application.Features.GradeFeature.Commands.CreateGradeCommand;
+using SetelaServerV3._1.Application.Features.GradeFeature.Commands.UpdateGradeCommand;
 using SetelaServerV3._1.Application.Features.GradeFeature.DTO;
 using SetelaServerV3._1.Shared.Utilities;
 using System.Security.Claims;
@@ -22,6 +23,22 @@ namespace SetelaServerV3._1.Application.Features.GradeFeature
             var response = await _mediator.Send(new CreateGradeCommand
             {
                 UserId = int.Parse(userId),
+                Grade = request
+            });
+            return response.ToActionResult();
+        }
+
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task<ActionResult<GradeDTO>> UpdateGrade([FromBody] UpdateGradeRequestDTO request, int id)
+        {
+            ClaimsPrincipal currentUser = HttpContext.User;
+            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            var response = await _mediator.Send(new UpdateGradeCommand
+            {
+                UserId = int.Parse(userId),
+                GradeId = id,
                 Grade = request
             });
             return response.ToActionResult();

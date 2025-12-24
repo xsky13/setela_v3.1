@@ -36,7 +36,8 @@ namespace SetelaServerV3._1.Application.Features.GradeFeature.Commands.CreateGra
                 Value = command.Grade.Value,
                 ParentType = parentGradeType,
                 ParentId = command.Grade.ParentId,
-                SysUserId = command.Grade.StudentId
+                SysUserId = command.Grade.StudentId,
+                CourseId = command.Grade.CourseId
             };
 
             _db.Grades.Add(grade);
