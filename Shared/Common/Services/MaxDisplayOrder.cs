@@ -14,6 +14,7 @@ namespace SetelaServerV3._1.Shared.Common.Services
             var moduleTask = _db.Modules.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct);
             var resourceTask = _db.Resources.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct);
             var assignmentTask = _db.Assignments.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct);
+            var examTask = _db.Exams.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct);
 
             await Task.WhenAll(topicTask, moduleTask, resourceTask);
 
@@ -21,7 +22,8 @@ namespace SetelaServerV3._1.Shared.Common.Services
                 topicTask.Result ?? 0,
                 moduleTask.Result ?? 0,
                 resourceTask.Result ?? 0,
-                assignmentTask.Result ?? 0
+                assignmentTask.Result ?? 0,
+                examTask.Result ?? 0,
             }.Max();
 
             return max + 1;
