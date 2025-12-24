@@ -12,5 +12,6 @@ namespace SetelaServerV3._1.Domain.Entities
         public List<TopicSeparator> TopicSeparators { get; set; } = [];
         public List<Module> Modules { get; set; } = [];
         public List<Assignment> Assignments { get; set; } = [];
+        public List<Exam> Exams { get; set; } = [];
     }
 }
