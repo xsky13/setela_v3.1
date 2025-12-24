@@ -14,5 +14,6 @@
         public int DisplayOrder { get; set; }
         public int CourseId { get; set; }
         public Course Course { get; set; }
+        public List<ExamSubmission> ExamSubmissions { get; set; }
     }
 }
