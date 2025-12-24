@@ -15,6 +15,11 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.
             var examExists = await _db.Exams.AnyAsync(e => e.Id == command.ExamSubmission.ExamId, cancellationToken);
             if (!examExists) return Result<ExamSubmissionDTO>.Fail("El examen no existe");
 
+            var studentSubmitted = await _db.ExamSubmissions
+                .AnyAsync(e => e.ExamId == command.ExamSubmission.ExamId && e.SysUserId == command.UserId, cancellationToken);
+            if (studentSubmitted)
+                return Result<ExamSubmissionDTO>.Fail("Ya realizo una entrega para este examen.");
+
             var examSubmission = new ExamSubmission
             { 
                 TextContent = command.ExamSubmission.TextContent ?? "",
