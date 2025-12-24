@@ -34,6 +34,14 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Create
                     .ExecuteUpdateAsync(s => s.SetProperty(b => b.LastUpdateDate, DateTime.UtcNow), cancellationToken);
             }
 
+            // if this is an exam submission also update the last updated timestamp
+            if (parentResourceType == ResourceParentType.ExamSubmission)
+            {
+                await _db.ExamSubmissions
+                    .Where(a => a.Id == command.ParentId)
+                    .ExecuteUpdateAsync(s => s.SetProperty(b => b.LastUdated, DateTime.UtcNow), cancellationToken);
+            }
+
             var newResource = new Resource
             { 
                 Url = command.Url,
@@ -63,6 +71,7 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Create
                 ResourceParentType.Assignment => await _db.Assignments.AnyAsync(m => m.Id == parentId, cancellationToken),
                 ResourceParentType.AssignmentSubmission => await _db.AssignmentSubmissions.AnyAsync(m => m.Id == parentId, cancellationToken),
                 ResourceParentType.Exam => await _db.Exams.AnyAsync(m => m.Id == parentId, cancellationToken),
+                ResourceParentType.ExamSubmission => await _db.ExamSubmissions.AnyAsync(m => m.Id == parentId, cancellationToken),
                 _ => false,
             };
         }
