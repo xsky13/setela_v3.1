@@ -9,6 +9,7 @@ using SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature;
 using SetelaServerV3._1.Application.Features.Auth.Config;
 using SetelaServerV3._1.Application.Features.CourseFeature;
 using SetelaServerV3._1.Application.Features.ExamFeature;
+using SetelaServerV3._1.Application.Features.ExamSubmissionFeature;
 using SetelaServerV3._1.Application.Features.ModuleFeature;
 using SetelaServerV3._1.Application.Features.TopicSeparatorFeature;
 using SetelaServerV3._1.Application.Features.UserFeature;
@@ -67,6 +68,7 @@ builder.Services.AddAutoMapper(
     typeof(ModuleMappingProfile).Assembly,
     typeof(AssignmentSubmissionMappingProfile).Assembly,
     typeof(ExamMapingProfile).Assembly,
+    typeof(ExamSubmissionMappingProfile).Assembly,
     typeof(AssignmentMappingProfile).Assembly);
 builder.Services.AddControllers();
 

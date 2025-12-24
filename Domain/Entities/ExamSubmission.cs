@@ -7,8 +7,8 @@
         public DateTime TurnInTime { get; set; }
         public DateTime LastUdated { get; set; }
         public int SysUserId { get; set; }
-        public int SysUser { get; set; }
+        public SysUser SysUser { get; set; }
         public int ExamId { get; set; }
-        public int Exam { get; set; }
+        public Exam Exam { get; set; }
     }
 }
