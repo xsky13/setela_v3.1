@@ -19,6 +19,11 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Queries.G
                 .FirstOrDefaultAsync(cancellationToken)
                 .LoadResources(_db, _mapper, Domain.Enums.ResourceParentType.ExamSubmission, cancellationToken)
                 .LoadGrades(_db, _mapper, Domain.Enums.GradeParentType.ExamSubmission, cancellationToken);
+
+            Console.WriteLine("\ntest\n");
+            Console.WriteLine(submission);
+            Console.WriteLine("\n test");
+
             if (submission == null) return Result<ExamSubmissionDTO>.Fail("La entrega no existe", 404);
 
             return Result<ExamSubmissionDTO>.Ok(submission);
