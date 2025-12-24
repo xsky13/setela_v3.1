@@ -1,8 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using SetelaServerV3._1.Domain.Entities;
 using SetelaServerV3._1.Infrastructure.Data;
-using System.Threading.Tasks;
 
 namespace SetelaServerV3._1.Shared.Common.Services
 {
@@ -10,23 +7,30 @@ namespace SetelaServerV3._1.Shared.Common.Services
     {
         public async Task<int> GetNext(int courseId, CancellationToken ct)
         {
-            var topicTask = _db.TopicSeparators.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct);
-            var moduleTask = _db.Modules.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct);
-            var resourceTask = _db.Resources.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct);
-            var assignmentTask = _db.Assignments.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct);
-            var examTask = _db.Exams.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct);
+            int t = await _db.TopicSeparators.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct) ?? 0;
+            int m = await _db.Modules.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct) ?? 0;
+            int e = await _db.Exams.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct) ?? 0;
+            int a = await _db.Assignments.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct) ?? 0;
+            int r = await _db.Resources.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct) ?? 0;
 
-            await Task.WhenAll(topicTask, moduleTask, resourceTask);
+            return new[] { t, m, e, a, r }.Max() + 1;
+            //var topicTask = _db.TopicSeparators.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct);
+            //var moduleTask = _db.Modules.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct);
+            //var resourceTask = _db.Resources.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct);
+            //var assignmentTask = _db.Assignments.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct);
+            //var examTask = _db.Exams.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct);
 
-            int max = new[] {
-                topicTask.Result ?? 0,
-                moduleTask.Result ?? 0,
-                resourceTask.Result ?? 0,
-                assignmentTask.Result ?? 0,
-                examTask.Result ?? 0,
-            }.Max();
+            //await Task.WhenAll(topicTask, moduleTask, resourceTask);
 
-            return max + 1;
+            //int max = new[] {
+            //    topicTask.Result ?? 0,
+            //    moduleTask.Result ?? 0,
+            //    resourceTask.Result ?? 0,
+            //    assignmentTask.Result ?? 0,
+            //    examTask.Result ?? 0,
+            //}.Max();
+
+            //return max + 1;
         }
     }
 }
