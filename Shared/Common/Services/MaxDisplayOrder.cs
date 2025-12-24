@@ -11,7 +11,7 @@ namespace SetelaServerV3._1.Shared.Common.Services
             int m = await _db.Modules.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct) ?? 0;
             int e = await _db.Exams.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct) ?? 0;
             int a = await _db.Assignments.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct) ?? 0;
-            int r = await _db.Resources.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct) ?? 0;
+            int r = await _db.Resources.Where(x => x.CourseId == courseId && x.ParentType == Domain.Enums.ResourceParentType.Course).MaxAsync(x => (int?)x.DisplayOrder, ct) ?? 0;
 
             return new[] { t, m, e, a, r }.Max() + 1;
             //var topicTask = _db.TopicSeparators.Where(x => x.CourseId == courseId).MaxAsync(x => (int?)x.DisplayOrder, ct);
