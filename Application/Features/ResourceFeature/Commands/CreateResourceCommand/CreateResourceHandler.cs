@@ -62,6 +62,7 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Create
                 ResourceParentType.Module => await _db.Modules.AnyAsync(m => m.Id == parentId, cancellationToken),
                 ResourceParentType.Assignment => await _db.Assignments.AnyAsync(m => m.Id == parentId, cancellationToken),
                 ResourceParentType.AssignmentSubmission => await _db.AssignmentSubmissions.AnyAsync(m => m.Id == parentId, cancellationToken),
+                ResourceParentType.Exam => await _db.Exams.AnyAsync(m => m.Id == parentId, cancellationToken),
                 _ => false,
             };
         }
