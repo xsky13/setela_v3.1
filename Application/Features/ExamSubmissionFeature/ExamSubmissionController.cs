@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.CreateExamSubmissionCommand;
+using SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.DeleteExamSubmissionCommand;
 using SetelaServerV3._1.Application.Features.ExamSubmissionFeature.DTO;
 using SetelaServerV3._1.Shared.Utilities;
 using System.Security.Claims;
@@ -23,6 +24,21 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature
             {
                 UserId = int.Parse(userId),
                 ExamSubmission = request
+            });
+            return response.ToActionResult();
+        }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<object>> DeleteExamSubmission(int id)
+        {
+            ClaimsPrincipal currentUser = HttpContext.User;
+            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            var response = await _mediator.Send(new DeleteExamSubmissionCommand
+            {
+                UserId = int.Parse(userId),
+                ExamSubmissionId = id
             });
             return response.ToActionResult();
         }
