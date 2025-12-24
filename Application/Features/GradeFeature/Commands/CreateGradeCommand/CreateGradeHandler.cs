@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature.DTO;
+using SetelaServerV3._1.Application.Features.ExamSubmissionFeature.DTO;
 using SetelaServerV3._1.Application.Features.GradeFeature.DTO;
 using SetelaServerV3._1.Domain.Entities;
 using SetelaServerV3._1.Domain.Enums;
@@ -52,6 +53,9 @@ namespace SetelaServerV3._1.Application.Features.GradeFeature.Commands.CreateGra
             {
                 GradeParentType.AssignmentSubmission => await _db.AssignmentSubmissions
                     .ProjectTo<AssignmentSubmissionDTO>(_mapper.ConfigurationProvider)
+                    .FirstOrDefaultAsync(m => m.Id == parentId, cancellationToken),
+                GradeParentType.ExamSubmission => await _db.ExamSubmissions
+                    .ProjectTo<ExamSubmissionDTO>(_mapper.ConfigurationProvider)
                     .FirstOrDefaultAsync(m => m.Id == parentId, cancellationToken),
                 _ => null,
             };
