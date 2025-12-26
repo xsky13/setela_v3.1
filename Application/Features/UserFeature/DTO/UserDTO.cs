@@ -1,4 +1,4 @@
-﻿using SetelaServerV3._1.Domain.Entities;
+﻿using SetelaServerV3._1.Application.Features.CourseFeature.DTO;
 using SetelaServerV3._1.Domain.Enums;
 
 namespace SetelaServerV3._1.Application.Features.UserFeature.DTO
@@ -11,6 +11,6 @@ namespace SetelaServerV3._1.Application.Features.UserFeature.DTO
         public string PasswordHash { get; set; }
         public UserRoles[] Roles { get; set; }
         public List<EnrollmentDTO> Enrollments { get; set; } = [];
-        public List<ProfessorCoursesDTO> ProfessorCourses { get; set; } = [];
+        public List<CourseDetailedDTO> ProfessorCourses { get; set; } = [];
     }
 }

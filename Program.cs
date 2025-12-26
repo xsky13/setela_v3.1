@@ -21,6 +21,28 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+// Define a specific policy name
+var allowedOrigins = "setela_client_v3.1";
+
+// Add CORS services to the container
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: allowedOrigins,
+        builder =>
+        {
+            // **CRITICAL:** Replace 'http://localhost:5173' with the exact URL of your frontend application.
+            // You can add multiple origins separated by commas or by calling WithOrigins multiple times.
+            builder.WithOrigins("http://localhost:5173")
+                   // This allows all standard HTTP methods (GET, POST, PUT, DELETE, OPTIONS, etc.)
+                   .AllowAnyMethod()
+                   // This allows all headers to be sent in the request
+                   .AllowAnyHeader()
+                   // Optional but recommended for development: allows credentials (like cookies) to be sent
+                   .AllowCredentials();
+        });
+});
+
 // Add services to the container.
 Env.Load();
 
@@ -93,6 +115,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(allowedOrigins);
 
 app.UseAuthentication();
 

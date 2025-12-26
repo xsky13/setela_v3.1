@@ -13,12 +13,13 @@ namespace SetelaServerV3._1.Application.Features.UserFeature.Queries.GetUserById
         public async Task<Result<UserDTO>> Handle(GetUserByIdQuery query, CancellationToken cancellationToken)
         {
             var user = await _db.SysUsers
-                .ProjectTo<UserDTO>(_mapper.ConfigurationProvider)
+                .Include(u => u.ProfessorCourses)
+                .Include(u => u.Enrollments)
                 .FirstOrDefaultAsync(user => user.Id == query.Id, cancellationToken);
 
             if (user == null) return Result<UserDTO>.Fail("El usuario no existe", 404);
 
-            return Result<UserDTO>.Ok(user);
+            return Result<UserDTO>.Ok(_mapper.Map<UserDTO>(user));
         }
     }
 }
