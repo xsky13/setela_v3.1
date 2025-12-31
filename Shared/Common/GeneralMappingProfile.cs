@@ -8,6 +8,8 @@ namespace SetelaServerV3._1.Shared.Common
     {
         public GeneralMappingProfile()
         {
+            CreateMap<Course, CourseListingDTO>();
+
             CreateMap<ExamSubmission, ExamSubmissionSimpleDTO>();
             CreateMap<Exam, ExamSimpleDTO>();
             CreateMap<Grade, GradeSimpleDTO>();

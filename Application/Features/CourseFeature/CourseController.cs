@@ -11,6 +11,7 @@ using SetelaServerV3._1.Application.Features.CourseFeature.DTO;
 using SetelaServerV3._1.Application.Features.CourseFeature.Queries.GetCourseByIdQuery;
 using SetelaServerV3._1.Application.Features.CourseFeature.Queries.GetCourses;
 using SetelaServerV3._1.Domain.Entities;
+using SetelaServerV3._1.Shared.Common.DTO;
 using SetelaServerV3._1.Shared.Utilities;
 using System.Security.Claims;
 
@@ -22,7 +23,7 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature
     {
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<Course[]>> GetCourse()
+        public async Task<ActionResult<List<CourseListingDTO>>> GetCourse()
         {
             var response = await _mediator.Send(new GetCoursesQuery());
             return Ok(response);
