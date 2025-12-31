@@ -3,6 +3,7 @@ using SetelaServerV3._1.Application.Features.CourseFeature.DTO;
 using SetelaServerV3._1.Domain.Entities;
 using SetelaServerV3._1.Domain.Enums;
 using SetelaServerV3._1.Infrastructure.Data;
+using SetelaServerV3._1.Shared.Common.DTO;
 
 namespace SetelaServerV3._1.Application.Features.CourseFeature
 {
