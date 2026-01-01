@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SetelaServerV3._1.Application.Features.CourseFeature.Commands.AddProfesorCommand;
 using SetelaServerV3._1.Application.Features.CourseFeature.Commands.CreateCourseCommand;
+using SetelaServerV3._1.Application.Features.CourseFeature.Commands.DeleteCourseCommand;
 using SetelaServerV3._1.Application.Features.CourseFeature.Commands.DisenrollStudentCommand;
 using SetelaServerV3._1.Application.Features.CourseFeature.Commands.EnrollStudentCommand;
 using SetelaServerV3._1.Application.Features.CourseFeature.Commands.RemoveProfessorCommand;
@@ -57,6 +58,23 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature
                 UserId = int.Parse(userId),
                 Title = request.Title,
                 Description = request.Description
+            };
+
+            var response = await _mediator.Send(command);
+            return response.ToActionResult();
+        }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<object>> DeleteCourse(int id)
+        {
+            ClaimsPrincipal currentUser = HttpContext.User;
+            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            var command = new DeleteCourseCommand
+            {
+                UserId = int.Parse(userId),
+                CourseId = id
             };
 
             var response = await _mediator.Send(command);

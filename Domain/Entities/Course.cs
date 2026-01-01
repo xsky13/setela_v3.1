@@ -7,6 +7,7 @@ namespace SetelaServerV3._1.Domain.Entities
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public bool IsActive { get; set; } = true;
         public List<Enrollment> Enrollments { get; set; } = [];
         public List<SysUser> Professors { get; set; } = [];
         public List<TopicSeparator> TopicSeparators { get; set; } = [];
