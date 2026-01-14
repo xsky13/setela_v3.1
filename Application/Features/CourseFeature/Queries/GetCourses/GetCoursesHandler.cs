@@ -15,6 +15,7 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature.Queries.GetCourse
         public async Task<List<CourseListingDTO>> Handle(GetCoursesQuery query, CancellationToken cancellationToken)
         {
             var courses = await _db.Courses
+                .Where(c => c.IsActive)
                 .ProjectTo<CourseListingDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
             return courses;
