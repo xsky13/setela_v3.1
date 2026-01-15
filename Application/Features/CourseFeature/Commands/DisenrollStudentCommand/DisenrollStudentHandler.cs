@@ -18,16 +18,19 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature.Commands.Disenrol
             if (!_userPermissions.CanChangeStudents(currentUser, command.UserId, command.CourseId))
                 return Result<CourseDTO>.Fail("No puede editar el curso", 403);
 
+            //var enrollment = await _db.Enrollments
+            //    .Include(enrollment => enrollment.Course)
+            //    .FirstOrDefaultAsync(enrollment => 
+            //        enrollment.SysUserId == command.UserId 
+            //        && enrollment.CourseId == command.CourseId
+            //        && enrollment.Valid, 
+            //    cancellationToken);
             var enrollment = await _db.Enrollments
-                .Include(enrollment => enrollment.Course)
-                .FirstOrDefaultAsync(enrollment => 
-                    enrollment.SysUserId == command.UserId 
-                    && enrollment.CourseId == command.CourseId
-                    && enrollment.Valid, 
-                cancellationToken);
+                .FirstOrDefaultAsync(e => e.CourseId == command.CourseId && e.SysUserId == command.UserId, cancellationToken);
             if (enrollment == null) return Result<CourseDTO>.Fail("El usuario no esta inscripto en el curso");
 
-            enrollment.Valid = false;
+            //enrollment.Valid = false;
+            _db.Enrollments.Remove(enrollment);
             await _db.SaveChangesAsync(cancellationToken);
 
             return Result<CourseDTO>.Ok(_mapper.Map<CourseDTO>(enrollment.Course));

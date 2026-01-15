@@ -20,7 +20,7 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature.Commands.EnrollSt
                 return Result<CourseDTO>.Fail("No puede editar este curso", 403);
 
             var course = await _db.Courses
-                .Include(course => course.Enrollments.Where(e => e.SysUserId == command.UserId && e.Valid))
+                .Include(course => course.Enrollments.Where(e => e.SysUserId == command.UserId))
                 .FirstOrDefaultAsync(course => course.Id == command.CourseId, cancellationToken);
             if (course == null) return Result<CourseDTO>.Fail("El curso no existe");
 
