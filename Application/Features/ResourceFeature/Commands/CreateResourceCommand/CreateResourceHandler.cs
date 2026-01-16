@@ -52,7 +52,7 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Create
                 CreationDate = DateTime.UtcNow,
                 SysUserId = command.UserId,
                 CourseId = command.CourseId,
-                DisplayOrder = await maxDisplayOrder.GetNext(command.CourseId, cancellationToken)
+                DisplayOrder = parentResourceType == ResourceParentType.Course ? await maxDisplayOrder.GetNext(command.CourseId, cancellationToken) : 0
             };
 
             _db.Resources.Add(newResource);
