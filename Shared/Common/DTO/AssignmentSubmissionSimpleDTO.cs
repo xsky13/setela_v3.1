@@ -6,5 +6,7 @@
         public int SysUserId { get; set; }
         public UserSimpleDTO SysUser { get; set; }
         public DateTime CreationDate { get; set; }
+        public DateTime LastUpdateDate { get; set; }
+        public int? Grade { get; set; }
     }
 }

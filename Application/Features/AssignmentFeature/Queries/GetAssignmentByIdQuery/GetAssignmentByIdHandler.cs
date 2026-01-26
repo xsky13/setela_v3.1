@@ -21,6 +21,22 @@ namespace SetelaServerV3._1.Application.Features.AssignmentFeature.Queries.GetAs
 
             if (assignment == null) return Result<AssignmentDTO>.Fail("El trabajo practico no existe", 404);
 
+            var submissionIds = assignment.AssignmentSubmissions.Select(s => s.Id).ToList();
+            var gradesDict = await _db.Grades
+                .Where(g => g.ParentType == Domain.Enums.GradeParentType.AssignmentSubmission &&
+                            submissionIds.Contains(g.ParentId))
+                .ToDictionaryAsync(g => g.ParentId, g => g.Value, cancellationToken);
+
+            foreach (var submission in assignment.AssignmentSubmissions)
+            {
+                if (gradesDict.TryGetValue(submission.Id, out var gradeValue))
+                {
+                    submission.Grade = gradeValue;
+                }
+            }
+
+            if (assignment == null) return Result<AssignmentDTO>.Fail("El trabajo practico no existe", 404);
+
             return Result<AssignmentDTO>.Ok(assignment);
         }
     }
