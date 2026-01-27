@@ -18,9 +18,17 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature
                 .ForMember(dest => dest.Resources, opt => opt.Ignore());
 
             CreateMap<Course, CourseDetailedDTO>()
-                .ForMember(dest => dest.Students, opt => opt.MapFrom(src => src.Enrollments.Count))
+                .ForMember(dest => dest.Students, opt => opt.MapFrom<StudentCountResolver>())
                 .ForMember(dest => dest.ExamsToGrade, opt => opt.MapFrom<ExamsToGradeResolver>())
                 .ForMember(dest => dest.AssignmentsToGrade, opt => opt.MapFrom<AssignmentToGradeResolver>());
+        }
+    }
+
+    public class StudentCountResolver(AppDbContext db) : IValueResolver<Course, object, int>
+    {
+        public int Resolve(Course source, object destination, int destMember, ResolutionContext context)
+        {
+            return db.Enrollments.Count(e => e.CourseId == source.Id && e.Valid);
         }
     }
 
