@@ -9,6 +9,7 @@ namespace SetelaServerV3._1.Shared.Common.DTO
         public bool Visible { get; set; } 
         public bool Closed { get; set; }
         public int DisplayOrder { get; set; }
+        public int CourseId { get; set; }
         public DateTime DueDate { get; set; }
     }
 }
