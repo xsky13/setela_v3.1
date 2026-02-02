@@ -45,6 +45,29 @@ namespace SetelaServerV3._1.Shared.Policies
             }
         }
 
+        public async Task<bool> CanModifyAssignmentSubmission(int userId, int ownerId, int courseId)
+        {
+            var currentUser = await _db.SysUsers.FindAsync(userId);
+            if (currentUser == null) return false;
+
+            if (currentUser.Roles.Contains(UserRoles.Admin)) return true;
+
+            if (currentUser.Roles.Contains(UserRoles.Professor))
+            {
+                if (await CanEditCourse(userId, courseId)) return true;
+                else return false;
+            }
+
+            if (currentUser.Roles.Contains(UserRoles.Student))
+            {
+                // check the assignment submissions' owner agains the current user id
+                if (ownerId == userId) return true;
+                return false;
+            }
+
+            return false;
+        }
+
         public async Task<bool> CanModifyResource(ResourceParentType parentType, int userId, int courseId, int? ownerId)
         {
             var currentUser = await _db.SysUsers.FindAsync(userId);
