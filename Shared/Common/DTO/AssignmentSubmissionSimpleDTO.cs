@@ -8,6 +8,6 @@
         public int AssignmentId { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime LastUpdateDate { get; set; }
-        public int? Grade { get; set; }
+        public GradeSimpleDTO? Grade { get; set; }
     }
 }

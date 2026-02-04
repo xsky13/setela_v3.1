@@ -25,13 +25,17 @@ namespace SetelaServerV3._1.Application.Features.AssignmentFeature.Queries.GetAs
             var gradesDict = await _db.Grades
                 .Where(g => g.ParentType == Domain.Enums.GradeParentType.AssignmentSubmission &&
                             submissionIds.Contains(g.ParentId))
-                .ToDictionaryAsync(g => g.ParentId, g => g.Value, cancellationToken);
+                .ToDictionaryAsync(g => g.ParentId, g => g, cancellationToken);
 
             foreach (var submission in assignment.AssignmentSubmissions)
             {
-                if (gradesDict.TryGetValue(submission.Id, out var gradeValue))
+                if (gradesDict.TryGetValue(submission.Id, out var grade))
                 {
-                    submission.Grade = gradeValue;
+                    submission.Grade = new Shared.Common.DTO.GradeSimpleDTO { 
+                        Id = grade.Id,
+                        Value = grade.Value,
+                        SysUserId = grade.SysUserId
+                    };
                 }
             }
 
