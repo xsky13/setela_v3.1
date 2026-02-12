@@ -23,6 +23,7 @@ namespace SetelaServerV3._1.Application.Features.ExamFeature.Commands.UpdateExam
             if (command.Exam.MaxGrade.HasValue) exam.MaxGrade = command.Exam.MaxGrade.Value;
             if (command.Exam.Weight.HasValue) exam.Weight = command.Exam.Weight.Value;
             if (command.Exam.Visible.HasValue) exam.Visible = command.Exam.Visible.Value;
+            if (command.Exam.Closed.HasValue) exam.Closed = command.Exam.Closed.Value;
             if (command.Exam.StartTime.HasValue) exam.StartTime = command.Exam.StartTime.Value;
             if (command.Exam.EndTime.HasValue) exam.EndTime = command.Exam.EndTime.Value;
 

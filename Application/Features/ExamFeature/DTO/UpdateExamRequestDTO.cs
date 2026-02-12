@@ -7,6 +7,7 @@
         public int? MaxGrade { get; set; }
         public int? Weight { get; set; }
         public bool? Visible { get; set; }
+        public bool? Closed { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
     }
