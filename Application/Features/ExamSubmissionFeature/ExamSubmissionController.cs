@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.CreateExamSubmissionCommand;
 using SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.DeleteExamSubmissionCommand;
 using SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.FinishExamCommand;
+using SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.UnfinishExamCommand;
 using SetelaServerV3._1.Application.Features.ExamSubmissionFeature.DTO;
 using SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Queries.GetExamSubmissionByIdQuery;
 using SetelaServerV3._1.Shared.Utilities;
@@ -50,6 +51,21 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature
             string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             var response = await _mediator.Send(new FinishExamCommand
+            {
+                UserId = int.Parse(userId),
+                ExamSubmissionId = id
+            });
+            return response.ToActionResult();
+        }
+
+        [Authorize]
+        [HttpPost("{id}/unfinish")]
+        public async Task<ActionResult<ExamSubmissionDTO>> UninishExam(int id)
+        {
+            ClaimsPrincipal currentUser = HttpContext.User;
+            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            var response = await _mediator.Send(new UnfinishExamCommand
             {
                 UserId = int.Parse(userId),
                 ExamSubmissionId = id

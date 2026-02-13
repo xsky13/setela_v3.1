@@ -23,7 +23,7 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.
             if (examSubmission == null) return Result<ExamSubmissionDTO>.Fail("La entrega no existe.");
 
             bool canEdit = await _userPermissions.CanEditCourse(command.UserId, examSubmission.CourseId);
-            if (examSubmission.Submission.SysUserId != command.UserId && !canEdit)
+            if (!canEdit)
                 return Result<ExamSubmissionDTO>.Fail("No es dueño de la entrega.");
 
             // check if user already submitted
