@@ -7,5 +7,6 @@
         public UserSimpleDTO SysUser { get; set; }
         public DateTime TurnInTime { get; set; }
         public DateTime LastUdated { get; set; }
+        public bool Finished { get; set; }
     }
 }

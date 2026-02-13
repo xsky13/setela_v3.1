@@ -6,6 +6,7 @@
         public string TextContent { get; set; } = "";
         public DateTime TurnInTime { get; set; }
         public DateTime LastUdated { get; set; }
+        public bool Finished { get; set; } = false;
         public int SysUserId { get; set; }
         public SysUser SysUser { get; set; }
         public int ExamId { get; set; }
