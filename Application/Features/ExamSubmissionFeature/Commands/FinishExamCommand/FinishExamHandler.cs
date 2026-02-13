@@ -35,7 +35,7 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.
             await _db.SaveChangesAsync(cancellationToken);
 
             // return
-            return Result<ExamSubmissionDTO>.Ok(_mapper.Map<ExamSubmissionDTO>(examSubmission));
+            return Result<ExamSubmissionDTO>.Ok(_mapper.Map<ExamSubmissionDTO>(examSubmission.Submission));
         }
     }
 }
