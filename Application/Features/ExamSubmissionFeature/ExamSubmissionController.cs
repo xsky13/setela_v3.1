@@ -45,7 +45,7 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature
 
         [Authorize]
         [HttpPost("{id}/finish")]
-        public async Task<ActionResult<ExamSubmissionDTO>> FinishExam(int id)
+        public async Task<ActionResult<ExamSubmissionDTO>> FinishExam([FromBody] FinishExamSubmissionRequestDTO request, int id)
         {
             ClaimsPrincipal currentUser = HttpContext.User;
             string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
@@ -53,7 +53,8 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature
             var response = await _mediator.Send(new FinishExamCommand
             {
                 UserId = int.Parse(userId),
-                ExamSubmissionId = id
+                ExamSubmissionId = id,
+                TextContent = request.TextContent
             });
             return response.ToActionResult();
         }

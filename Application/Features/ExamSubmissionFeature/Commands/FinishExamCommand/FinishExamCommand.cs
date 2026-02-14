@@ -8,5 +8,6 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.
     {
         public int UserId { get; set; }
         public int ExamSubmissionId { get; set; }
+        public string? TextContent { get; set; }
     }
 }

@@ -32,6 +32,7 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.
 
             // change state
             examSubmission.Submission.Finished = true;
+            examSubmission.Submission.TextContent = string.IsNullOrEmpty(command.TextContent) ? "" : command.TextContent;
             await _db.SaveChangesAsync(cancellationToken);
 
             // return
