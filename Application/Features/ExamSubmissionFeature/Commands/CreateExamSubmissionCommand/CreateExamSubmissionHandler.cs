@@ -25,7 +25,8 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.
                 TextContent = command.ExamSubmission.TextContent ?? "",
                 StartTime = DateTime.UtcNow,
                 SysUserId = command.UserId,
-                ExamId = command.ExamSubmission.ExamId
+                ExamId = command.ExamSubmission.ExamId,
+                TurnInTime = null
             };
 
             _db.ExamSubmissions.Add(examSubmission);
