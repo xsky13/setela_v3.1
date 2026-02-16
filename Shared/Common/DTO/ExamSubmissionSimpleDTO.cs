@@ -9,5 +9,6 @@
         public DateTime TurnInTime { get; set; }
         public DateTime LastUdated { get; set; }
         public bool Finished { get; set; }
+        public GradeSimpleDTO? Grade { get; set; }
     }
 }
