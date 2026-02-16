@@ -5,7 +5,7 @@ namespace SetelaServerV3._1.Shared.Common.Services
 {
     public class FileUploadService : IFileUploadService
     {
-        public async Task<Result<object>> UploadFile(List<IFormFile> files)
+        public async Task<Result<object>> UploadFiles(List<IFormFile> files)
         {
             try
             {

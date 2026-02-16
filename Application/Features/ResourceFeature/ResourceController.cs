@@ -7,6 +7,7 @@ using SetelaServerV3._1.Application.Features.ResourceFeature.Commands.DeleteReso
 using SetelaServerV3._1.Application.Features.ResourceFeature.Commands.UpdateResourceCommand;
 using SetelaServerV3._1.Application.Features.ResourceFeature.DTO;
 using SetelaServerV3._1.Domain.Entities;
+using SetelaServerV3._1.Shared.Common.Interfaces;
 using SetelaServerV3._1.Shared.Utilities;
 using System.Security.Claims;
 
@@ -14,14 +15,17 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ResourceController(IMediator _mediator) : ControllerBase
+    public class ResourceController(IMediator _mediator, IFileUploadService _uploadService) : ControllerBase
     {
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<Resource>> CreateResource([FromBody] CreateResourceRequestDTO request)
+        public async Task<ActionResult<Resource>> CreateResource([FromForm] CreateResourceRequestDTO request)
         {
             ClaimsPrincipal currentUser = HttpContext.User;
             string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            var uploadResult = await _uploadService.UploadFiles(request.Files);
+            if (!uploadResult.Success) return BadRequest(uploadResult.Error);
 
             var response = await _mediator.Send(new CreateResourceCommand
             {
