@@ -15,6 +15,7 @@ using SetelaServerV3._1.Application.Features.TopicSeparatorFeature;
 using SetelaServerV3._1.Application.Features.UserFeature;
 using SetelaServerV3._1.Infrastructure.Data;
 using SetelaServerV3._1.Shared.Common;
+using SetelaServerV3._1.Shared.Common.Interfaces;
 using SetelaServerV3._1.Shared.Common.Services;
 using SetelaServerV3._1.Shared.Policies;
 using System.Text;
@@ -76,6 +77,7 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connect
 
 builder.Services.AddScoped<IPermissionHandler, Permissions>();
 builder.Services.AddScoped<MaxDisplayOrder>();
+builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 
 builder.Services.AddAuthorization();
 

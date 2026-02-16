@@ -5,6 +5,27 @@ namespace SetelaServerV3._1.Shared.Common.Services
 {
     public class FileUploadService : IFileUploadService
     {
+        public async Task<Result<string>> UploadFile(IFormFile file)
+        {
+            try
+            {
+                string path = "";
+                if (file.Length > 0)
+                {
+                    path = Path.GetFullPath("C:\\Users\\Jared\\Desktop\\setela_v3\\UploadArea\\" + file.FileName);
+                    using (var stream = System.IO.File.Create(path))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                }
+                return Result<string>.Ok(path);
+            }
+            catch (Exception e)
+            {
+                return Result<string>.Fail(e.Message);
+            }
+        }
+
         public async Task<Result<object>> UploadFiles(List<IFormFile> files)
         {
             try

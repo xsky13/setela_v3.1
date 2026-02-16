@@ -24,12 +24,19 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature
             ClaimsPrincipal currentUser = HttpContext.User;
             string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
-            var uploadResult = await _uploadService.UploadFiles(request.Files);
-            if (!uploadResult.Success) return BadRequest(uploadResult.Error);
+            string finalUrl = request.Url ?? "";
+
+            if (request.File != null)
+            {
+                var uploadResult = await _uploadService.UploadFile(request.File);
+                if (!uploadResult.Success) return BadRequest(uploadResult.Error);
+
+                finalUrl = uploadResult.Value;
+            }
 
             var response = await _mediator.Send(new CreateResourceCommand
             {
-                Url = request.Url,
+                Url = string.IsNullOrEmpty(request.Url) ? finalUrl : request.Url,
                 LinkText = request.LinkText,
                 Type = request.Type,
                 ParentType = request.ParentType,

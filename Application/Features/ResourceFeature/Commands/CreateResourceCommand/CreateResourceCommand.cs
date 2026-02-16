@@ -6,7 +6,7 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Create
 {
     public class CreateResourceCommand : IRequest<Result<Resource>>
     {
-        public string Url { get; set; }
+        public string? Url { get; set; }
         public string? LinkText { get; set; }
         public string Type { get; set; }
         public string ParentType { get; set; }
