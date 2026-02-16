@@ -31,6 +31,8 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.
                 return Result<ExamSubmissionDTO>.Fail("Esta entrega ya esta finalizada.");
 
             // change state
+            examSubmission.Submission.TurnInTime = DateTime.UtcNow;
+            examSubmission.Submission.LastUdated = DateTime.UtcNow;
             examSubmission.Submission.Finished = true;
             examSubmission.Submission.TextContent = string.IsNullOrEmpty(command.TextContent) ? "" : command.TextContent;
             await _db.SaveChangesAsync(cancellationToken);

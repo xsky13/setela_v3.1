@@ -23,8 +23,7 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.
             var examSubmission = new ExamSubmission
             { 
                 TextContent = command.ExamSubmission.TextContent ?? "",
-                TurnInTime = DateTime.UtcNow,
-                LastUdated = DateTime.UtcNow,
+                StartTime = DateTime.UtcNow,
                 SysUserId = command.UserId,
                 ExamId = command.ExamSubmission.ExamId
             };
