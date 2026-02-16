@@ -25,7 +25,7 @@ namespace SetelaServerV3._1.Application.Features.ExamFeature.Queries.GetExamById
 
             var submissionIds = exam.ExamSubmissions.Select(s => s.Id).ToList();
             var gradesDict = await _db.Grades
-                .Where(g => g.ParentType == Domain.Enums.GradeParentType.AssignmentSubmission &&
+                .Where(g => g.ParentType == Domain.Enums.GradeParentType.ExamSubmission &&
                             submissionIds.Contains(g.ParentId))
                 .ToDictionaryAsync(g => g.ParentId, g => g, cancellationToken);
 
