@@ -19,7 +19,7 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature
     {
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<Resource>> CreateResource([FromBody] CreateResourceRequestDTO request)
+        public async Task<ActionResult<Resource>> CreateResource([FromForm] CreateResourceRequestDTO request)
         {
             ClaimsPrincipal currentUser = HttpContext.User;
             string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
@@ -41,7 +41,8 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature
 
             var response = await _mediator.Send(new CreateResourceCommand
             {
-                Url = request.LinkText ?? ("/cdn/" + finalUrl),
+                BaseUrl = $"{Request.Scheme}://{Request.Host}",
+                Url = request.LinkText ?? finalUrl,
                 LinkText = request.LinkText,
                 Type = request.Type,
                 ParentType = request.ParentType,
