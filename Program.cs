@@ -79,6 +79,7 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connect
 builder.Services.AddScoped<IPermissionHandler, Permissions>();
 builder.Services.AddScoped<MaxDisplayOrder>();
 builder.Services.AddScoped<IFileStorage, LocalFileService>();
+builder.Services.AddScoped<IResourceCleanupService, ResourceCleanupService>();
 
 builder.Services.AddAuthorization();
 

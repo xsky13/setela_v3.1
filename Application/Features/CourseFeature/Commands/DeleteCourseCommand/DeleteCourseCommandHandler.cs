@@ -1,12 +1,15 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SetelaServerV3._1.Domain.Entities;
+using SetelaServerV3._1.Domain.Enums;
 using SetelaServerV3._1.Infrastructure.Data;
+using SetelaServerV3._1.Shared.Common.Interfaces;
 using SetelaServerV3._1.Shared.Policies;
 using SetelaServerV3._1.Shared.Utilities;
 
 namespace SetelaServerV3._1.Application.Features.CourseFeature.Commands.DeleteCourseCommand
 {
-    public class DeleteCourseCommandHandler(AppDbContext _db, IPermissionHandler _userPermissions) : IRequestHandler<DeleteCourseCommand, Result<object>>
+    public class DeleteCourseCommandHandler(AppDbContext _db, IPermissionHandler _userPermissions, IResourceCleanupService _cleanupService) : IRequestHandler<DeleteCourseCommand, Result<object>>
     {
         public async Task<Result<object>> Handle(DeleteCourseCommand command, CancellationToken cancellationToken)
         {
@@ -21,6 +24,8 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature.Commands.DeleteCo
 
             foreach (var enrollment in course.Enrollments)
                 enrollment.Valid = false;
+
+            await _cleanupService.ClearParentResources(course.Id, ResourceParentType.Course, cancellationToken);
 
             //_db.Courses.Remove(course);
             course.IsActive = false;
