@@ -7,6 +7,7 @@ using SetelaServerV3._1.Application.Features.ResourceFeature.Commands.DeleteReso
 using SetelaServerV3._1.Application.Features.ResourceFeature.Commands.UpdateResourceCommand;
 using SetelaServerV3._1.Application.Features.ResourceFeature.DTO;
 using SetelaServerV3._1.Domain.Entities;
+using SetelaServerV3._1.Shared.Common.Interfaces;
 using SetelaServerV3._1.Shared.Utilities;
 using System.Security.Claims;
 
@@ -14,7 +15,7 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ResourceController(IMediator _mediator) : ControllerBase
+    public class ResourceController(IMediator _mediator, IFileStorage _storageService) : ControllerBase
     {
         [Authorize]
         [HttpPost]
@@ -23,9 +24,24 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature
             ClaimsPrincipal currentUser = HttpContext.User;
             string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
+            if (request.File == null && string.IsNullOrWhiteSpace(request.Url))
+            {
+                return BadRequest("El recurso debe tener o una url o un archivo.");
+            }
+
+            string finalUrl = request.Url ?? "";
+
+            if (request.File != null)
+            {
+                var uploadResult = await _storageService.SaveFile(request.File);
+                if (!uploadResult.Success) return BadRequest(uploadResult.Error);
+
+                finalUrl = uploadResult.Value;
+            }
+
             var response = await _mediator.Send(new CreateResourceCommand
             {
-                Url = request.Url,
+                Url = request.LinkText ?? (request.File?.FileName ?? finalUrl),
                 LinkText = request.LinkText,
                 Type = request.Type,
                 ParentType = request.ParentType,
