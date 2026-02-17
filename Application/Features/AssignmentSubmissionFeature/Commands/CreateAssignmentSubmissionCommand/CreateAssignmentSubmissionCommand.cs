@@ -9,5 +9,6 @@ namespace SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature.Com
     {
         public int UserId { get; set; }
         public CreateAssignmentSubmissionRequestDTO AssignmentSubmission { get; set; }
+        public string BaseUrl { get; set; }
     }
 }

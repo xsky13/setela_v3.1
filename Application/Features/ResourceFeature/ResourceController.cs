@@ -38,8 +38,6 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature
                 finalPath = uploadResult.Value;
             } else finalPath = request.Url!;
 
-            Console.WriteLine(request);
-
                 var response = await _mediator.Send(new CreateResourceCommand
                 {
                     BaseUrl = $"{Request.Scheme}://{Request.Host}",

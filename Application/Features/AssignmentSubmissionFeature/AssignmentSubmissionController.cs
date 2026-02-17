@@ -7,6 +7,9 @@ using SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature.Command
 using SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature.Commands.UpdateAssignmentSubmissionCommand;
 using SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature.DTO;
 using SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature.Queries.GetAssignmentSubmissionByIdQuery;
+using SetelaServerV3._1.Application.Features.ResourceFeature.Commands.CreateResourceCommand;
+using SetelaServerV3._1.Domain.Enums;
+using SetelaServerV3._1.Shared.Common.Interfaces;
 using SetelaServerV3._1.Shared.Utilities;
 using System.Security.Claims;
 
@@ -26,7 +29,7 @@ namespace SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature
 
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<AssignmentSubmissionDTO>> Create([FromBody] CreateAssignmentSubmissionRequestDTO request)
+        public async Task<ActionResult<AssignmentSubmissionDTO>> Create([FromForm] CreateAssignmentSubmissionRequestDTO request)
         {
             ClaimsPrincipal currentUser = HttpContext.User;
             string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
@@ -34,7 +37,8 @@ namespace SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature
             var response = await _mediator.Send(new CreateAssignmentSubmissionCommand
             {
                 UserId = int.Parse(userId),
-                AssignmentSubmission = request
+                AssignmentSubmission = request,
+                BaseUrl = $"{Request.Scheme}://{Request.Host}",
             });
 
             return response.ToActionResult();

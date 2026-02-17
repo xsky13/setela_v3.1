@@ -99,13 +99,13 @@ namespace SetelaServerV3._1.Shared.Policies
             if (currentUser.Roles.Contains(UserRoles.Student))
             {
                 // check if student is trying to submit an assignment or not
-                if (parentType != ResourceParentType.AssignmentSubmission || parentType != ResourceParentType.ExamSubmission)
+                if (parentType != ResourceParentType.AssignmentSubmission && parentType != ResourceParentType.ExamSubmission)
                 {
                     return false;
                 } else
                 {
                     // user is creating a resource
-                    if (ownerId != null) return true;
+                    if (ownerId == null) return true;
                     else
                     {
                         // user is modifying resource
