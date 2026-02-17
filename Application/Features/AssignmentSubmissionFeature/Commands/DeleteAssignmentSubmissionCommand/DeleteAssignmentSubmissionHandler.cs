@@ -30,6 +30,7 @@ namespace SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature.Com
                 await _cleanupService.ClearParentResources(assignmentSubmission.Id, ResourceParentType.AssignmentSubmission, cancellationToken);
 
                 await _db.SaveChangesAsync(cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
 
                 return Result<object>.Ok(new { Success = true });
             }

@@ -8,9 +8,9 @@ namespace SetelaServerV3._1.Shared.Common.Services
     {
         private readonly string path = "C:\\Users\\Jared\\Desktop\\setela_v3\\UploadArea\\";
 
-        public async Task<Result<object>> DeleteFile(string fileName)
+        public async Task<Result<object>> DeleteFile(string fileName, int userId)
         {
-            var filePath = Path.Combine(path, Path.GetFileName(fileName));
+            var filePath = Path.Combine(path, $"{userId}/{Path.GetFileName(fileName)}");
             if (System.IO.File.Exists(filePath))
             {
                 try
@@ -22,21 +22,34 @@ namespace SetelaServerV3._1.Shared.Common.Services
                 {
                     return Result<object>.Fail(ex.Message);
                 }
-            } else
+            }
+            else
             {
                 return Result<object>.Fail("El archivo no existe");
             }
         }
 
-        public async Task<Result<string>> SaveFile(IFormFile file)
+        public async Task<Result<string>> SaveFile(IFormFile file, int userId)
         {
             try
             {
                 string fileName = "";
                 if (file.Length > 0)
                 {
-                    fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-                    var fullPath = Path.Combine(path, fileName);
+
+                    var userPath = Path.Combine(path, userId.ToString());
+
+                    if (!Directory.Exists(userPath))
+                        Directory.CreateDirectory(userPath);
+
+                    fileName = Path.GetFileName(file.FileName);
+                    string fullPath = Path.Combine(userPath, fileName);
+                    if (File.Exists(fullPath))
+                    {
+                        fileName = $"{DateTime.Now.Ticks}_${file.FileName}";
+                        fullPath = Path.Combine(userPath, fileName);
+                    }
+
 
                     using (var stream = System.IO.File.Create(fullPath))
                     {
@@ -44,7 +57,8 @@ namespace SetelaServerV3._1.Shared.Common.Services
                     }
                 }
                 return Result<string>.Ok(fileName);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 return Result<string>.Fail(e.Message);
             }

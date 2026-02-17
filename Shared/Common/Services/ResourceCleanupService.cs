@@ -20,7 +20,7 @@ namespace SetelaServerV3._1.Shared.Common.Services
                 if (rd.ResourceType == ResourceType.Document)
                 {
                     var filename = Path.GetFileName(rd.Url);
-                    await _storageService.DeleteFile(filename);
+                    await _storageService.DeleteFile(filename, rd.SysUserId);
                 }
             }
 

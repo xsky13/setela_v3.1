@@ -33,7 +33,7 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature
 
             if (request.File != null)
             {
-                var uploadResult = await _storageService.SaveFile(request.File);
+                var uploadResult = await _storageService.SaveFile(request.File, int.Parse(userId));
                 if (!uploadResult.Success) return BadRequest(uploadResult.Error);
                 finalPath = uploadResult.Value;
             } else finalPath = request.Url!;

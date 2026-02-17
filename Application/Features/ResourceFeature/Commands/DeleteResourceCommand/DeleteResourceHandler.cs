@@ -36,8 +36,7 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Delete
 
             if (resource.ResourceType == Domain.Enums.ResourceType.Document)
             {
-                var fileName = Path.GetFileName(resource.Url);
-                var result = await _storageService.DeleteFile(fileName);
+                var result = await _storageService.DeleteFile(resource.Url, command.UserId);
                 if (!result.Success) return Result<object>.Fail(result.Error);
             }
 

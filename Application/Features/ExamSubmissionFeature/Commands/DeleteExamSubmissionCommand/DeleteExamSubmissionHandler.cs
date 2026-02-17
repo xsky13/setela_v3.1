@@ -33,6 +33,8 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.
 
                 await _cleanupService.ClearParentResources(submission.Id, ResourceParentType.ExamSubmission, cancellationToken);
 
+                await transaction.CommitAsync(cancellationToken);
+
                 return Result<object>.Ok(new { Success = true });
             }
             catch (Exception)

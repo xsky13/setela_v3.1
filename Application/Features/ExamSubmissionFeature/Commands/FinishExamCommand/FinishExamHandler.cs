@@ -50,14 +50,14 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.
 
                 foreach (var file in command.Files)
                 {
-                    var uploadResult = await _storageService.SaveFile(file);
+                    var uploadResult = await _storageService.SaveFile(file, command.UserId);
                     if (!uploadResult.Success) throw new Exception(uploadResult.Error);
 
 
                     var resource = new Resource
                     {
-                        Url = command.BaseUrl + "/cdn/" + uploadResult.Value,
-                        LinkText = "",
+                        Url = command.BaseUrl + "/cdn/" + command.UserId.ToString() + "/" + uploadResult.Value,
+                        LinkText = uploadResult.Value,
                         ResourceType = ResourceType.Document,
                         ParentType = ResourceParentType.ExamSubmission,
                         ParentId = examSubmission.Submission.Id,
@@ -88,7 +88,7 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.
             {
                 foreach (var res in uploadedResources)
                 {
-                    await _storageService.DeleteFile(res.Url);
+                    await _storageService.DeleteFile(res.Url, command.UserId);
                 }
                 await transaction.RollbackAsync(cancellationToken);
                 return Result<ExamSubmissionDTO>.Fail("Error al procesar los archivos.");
