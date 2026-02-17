@@ -1,12 +1,13 @@
 ﻿using MediatR;
 using SetelaServerV3._1.Domain.Entities;
 using SetelaServerV3._1.Infrastructure.Data;
+using SetelaServerV3._1.Shared.Common.Interfaces;
 using SetelaServerV3._1.Shared.Policies;
 using SetelaServerV3._1.Shared.Utilities;
 
 namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.DeleteResourceCommand
 {
-    public class DeleteResourceHandler(AppDbContext _db, IPermissionHandler _userPermissions) : IRequestHandler<DeleteResourceCommand, Result<object>>
+    public class DeleteResourceHandler(AppDbContext _db, IPermissionHandler _userPermissions, IFileStorage _storageService) : IRequestHandler<DeleteResourceCommand, Result<object>>
     {
         public async Task<Result<object>> Handle(DeleteResourceCommand command, CancellationToken cancellationToken)
         {
@@ -15,6 +16,13 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Delete
 
             if (!await _userPermissions.CanModifyResource(resource.ParentType, command.UserId, resource.CourseId, resource.SysUserId))
                 return Result<object>.Fail("No puede modificar este recurso", 403);
+
+            if (resource.ResourceType == Domain.Enums.ResourceType.Document)
+            {
+                var fileName = Path.GetFileName(resource.Url);
+                var result = await _storageService.DeleteFile(fileName);
+                if (!result.Success) return Result<object>.Fail(result.Error);
+            }
 
             _db.Resources.Remove(resource);
             await _db.SaveChangesAsync(cancellationToken);
