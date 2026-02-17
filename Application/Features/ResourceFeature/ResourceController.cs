@@ -29,27 +29,29 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature
                 return BadRequest("El recurso debe tener o una url o un archivo.");
             }
 
-            string finalUrl = request.Url ?? "";
+            string finalPath = string.Empty;
 
             if (request.File != null)
             {
                 var uploadResult = await _storageService.SaveFile(request.File);
                 if (!uploadResult.Success) return BadRequest(uploadResult.Error);
+                finalPath = uploadResult.Value;
+            } else finalPath = request.Url!;
 
-                finalUrl = uploadResult.Value;
-            }
+            Console.WriteLine(request);
 
-            var response = await _mediator.Send(new CreateResourceCommand
-            {
-                BaseUrl = $"{Request.Scheme}://{Request.Host}",
-                Url = request.LinkText ?? finalUrl,
-                LinkText = request.LinkText,
-                Type = request.Type,
-                ParentType = request.ParentType,
-                ParentId = request.ParentId,
-                UserId = int.Parse(userId),
-                CourseId = request.CourseId
-            });
+                var response = await _mediator.Send(new CreateResourceCommand
+                {
+                    BaseUrl = $"{Request.Scheme}://{Request.Host}",
+                    Url = finalPath,
+                    LinkText = request.LinkText,
+                    Type = request.Type,
+                    ParentType = request.ParentType,
+                    ParentId = request.ParentId,
+                    UserId = int.Parse(userId),
+                    CourseId = request.CourseId,
+                    Download = request.Download
+                });
             return response.ToActionResult();
         }
 

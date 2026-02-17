@@ -13,8 +13,6 @@ namespace SetelaServerV3._1.Shared.Common.Services
                 string fileName = "";
                 if (file.Length > 0)
                 {
-
-
                     fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
                     var fullPath = Path.Combine("C:\\Users\\Jared\\Desktop\\setela_v3\\UploadArea\\", fileName);
 

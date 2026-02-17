@@ -11,5 +11,6 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.DTO
         public int ParentId { get; set; }
         public int CourseId { get; set; }
         public IFormFile File{ get; set; }
+        public Boolean Download { get; set; }
     }
 }

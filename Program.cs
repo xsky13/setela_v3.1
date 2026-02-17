@@ -111,7 +111,15 @@ var uploadPath = builder.Configuration["UploadArea"];
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(uploadPath),
-    RequestPath = "/cdn"
+    RequestPath = "/cdn",
+    ServeUnknownFileTypes = true,
+    OnPrepareResponse = ctx =>
+    {
+        if (ctx.Context.Request.Query.ContainsKey("download"))
+        {
+            ctx.Context.Response.Headers.Append("Content-Disposition", "attachment");
+        }
+    }
 });
 
 app.UseExceptionHandler(options => { });
