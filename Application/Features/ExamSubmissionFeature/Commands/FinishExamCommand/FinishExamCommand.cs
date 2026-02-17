@@ -9,5 +9,8 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.
         public int UserId { get; set; }
         public int ExamSubmissionId { get; set; }
         public string? TextContent { get; set; }
+        public int CourseId { get; set; }
+        public List<IFormFile> Files { get; set; }
+        public string BaseUrl { get; set; }
     }
 }

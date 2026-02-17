@@ -45,7 +45,7 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature
 
         [Authorize]
         [HttpPost("{id}/finish")]
-        public async Task<ActionResult<ExamSubmissionDTO>> FinishExam([FromBody] FinishExamSubmissionRequestDTO request, int id)
+        public async Task<ActionResult<ExamSubmissionDTO>> FinishExam([FromForm] FinishExamSubmissionRequestDTO request, int id)
         {
             ClaimsPrincipal currentUser = HttpContext.User;
             string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
@@ -54,7 +54,10 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature
             {
                 UserId = int.Parse(userId),
                 ExamSubmissionId = id,
-                TextContent = request.TextContent
+                TextContent = request.TextContent,
+                BaseUrl = $"{Request.Scheme}://{Request.Host}",
+                CourseId = request.CourseId,
+                Files = request.Files,
             });
             return response.ToActionResult();
         }

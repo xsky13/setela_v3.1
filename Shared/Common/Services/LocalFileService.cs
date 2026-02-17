@@ -10,7 +10,7 @@ namespace SetelaServerV3._1.Shared.Common.Services
 
         public async Task<Result<object>> DeleteFile(string fileName)
         {
-            var filePath = Path.Combine(path, fileName);
+            var filePath = Path.Combine(path, Path.GetFileName(fileName));
             if (System.IO.File.Exists(filePath))
             {
                 try
