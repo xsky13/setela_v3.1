@@ -10,16 +10,20 @@ namespace SetelaServerV3._1.Shared.Common.Services
         {
             try
             {
-                string path = "";
+                string fileName = "";
                 if (file.Length > 0)
                 {
-                    path = Path.GetFullPath("C:\\Users\\Jared\\Desktop\\setela_v3\\UploadArea\\" + file.FileName);
-                    using (var stream = System.IO.File.Create(path))
+
+
+                    fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                    var fullPath = Path.Combine("C:\\Users\\Jared\\Desktop\\setela_v3\\UploadArea\\", fileName);
+
+                    using (var stream = System.IO.File.Create(fullPath))
                     {
                         await file.CopyToAsync(stream);
                     }
                 }
-                return Result<string>.Ok(path);
+                return Result<string>.Ok(fileName);
             } catch (Exception e)
             {
                 return Result<string>.Fail(e.Message);

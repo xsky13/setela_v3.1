@@ -2,6 +2,7 @@ using AutoMapper;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using SetelaServerV3._1;
 using SetelaServerV3._1.Application.Features.AssignmentFeature;
@@ -105,6 +106,14 @@ builder.Services.AddOpenApi();
 builder.Services.AddExceptionHandler<ExceptionHandler>();
 
 var app = builder.Build();
+
+var uploadPath = builder.Configuration["UploadArea"];
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(uploadPath),
+    RequestPath = "/cdn"
+});
+
 app.UseExceptionHandler(options => { });
 
 

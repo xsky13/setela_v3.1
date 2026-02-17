@@ -41,7 +41,7 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature
 
             var response = await _mediator.Send(new CreateResourceCommand
             {
-                Url = request.LinkText ?? (request.File?.FileName ?? finalUrl),
+                Url = request.LinkText ?? ("/cdn/" + finalUrl),
                 LinkText = request.LinkText,
                 Type = request.Type,
                 ParentType = request.ParentType,
