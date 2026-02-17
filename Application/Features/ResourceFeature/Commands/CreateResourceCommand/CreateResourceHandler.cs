@@ -49,13 +49,13 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Create
             }
             else
             {
-                savedUrl = $"{command.BaseUrl}/cdn/{command.Url}";
+                savedUrl = $"{command.BaseUrl}/cdn/{command.UserId}/{command.Url}";
             }
 
             var newResource = new Resource
             { 
                 Url = savedUrl,
-                LinkText = command.LinkText,
+                LinkText = string.IsNullOrEmpty(command.LinkText) ? command.Url : command.LinkText,
                 ResourceType = resourceType,
                 ParentType = parentResourceType,
                 ParentId = command.ParentId,
