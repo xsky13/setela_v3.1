@@ -13,27 +13,28 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.
     {
         public async Task<Result<object>> Handle(DeleteExamSubmissionCommand command, CancellationToken cancellationToken)
         {
-            using var transaction = await _db.Database.BeginTransactionAsync(cancellationToken);
-            try
-            {
-                var submission = await _db.ExamSubmissions
+            var submission = await _db.ExamSubmissions
                     .Where(e => e.Id == command.ExamSubmissionId)
                     .Select(e => new { e.SysUserId, e.Exam.CourseId, e.Id })
                     .FirstOrDefaultAsync(cancellationToken);
-                if (submission == null) return Result<object>.Fail("La entrega no existe");
+            if (submission == null) return Result<object>.Fail("La entrega no existe");
 
-                var canEditCourse = await _userPermissions.CanEditCourse(command.UserId, submission.CourseId);
+            var canEditCourse = await _userPermissions.CanEditCourse(command.UserId, submission.CourseId);
+            if (submission.SysUserId != command.UserId && !canEditCourse)
+                return Result<object>.Fail("No puede borrar esta entrega", 403);
 
-                if (submission.SysUserId != command.UserId && !canEditCourse)
-                    return Result<object>.Fail("No puede borrar esta entrega", 403);
-
+            using var transaction = await _db.Database.BeginTransactionAsync(cancellationToken);
+            try
+            {
+                var resourcesToDelete = await _cleanupService.ClearParentResources(submission.Id, ResourceParentType.ExamSubmission, cancellationToken);
                 await _db.ExamSubmissions
                     .Where(e => e.Id == command.ExamSubmissionId)
                     .ExecuteDeleteAsync(cancellationToken);
 
-                await _cleanupService.ClearParentResources(submission.Id, ResourceParentType.ExamSubmission, cancellationToken);
-
+                await _db.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
+
+                await _cleanupService.ClearResourceFiles(resourcesToDelete);
 
                 return Result<object>.Ok(new { Success = true });
             }

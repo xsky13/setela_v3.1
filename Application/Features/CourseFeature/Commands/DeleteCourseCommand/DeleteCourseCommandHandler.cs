@@ -25,8 +25,6 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature.Commands.DeleteCo
             foreach (var enrollment in course.Enrollments)
                 enrollment.Valid = false;
 
-            await _cleanupService.ClearParentResources(course.Id, ResourceParentType.Course, cancellationToken);
-
             //_db.Courses.Remove(course);
             course.IsActive = false;
 

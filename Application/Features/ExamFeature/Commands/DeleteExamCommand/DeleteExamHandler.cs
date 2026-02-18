@@ -15,28 +15,35 @@ namespace SetelaServerV3._1.Application.Features.ExamFeature.Commands.DeleteExam
     {
         public async Task<Result<object>> Handle(DeleteExamCommand command, CancellationToken cancellationToken)
         {
+            var exam = await _db.Exams.FindAsync([command.ExamId], cancellationToken);
+            if (exam == null) return Result<object>.Fail("El examen no existe.");
+
+            if (!await _userPermissions.CanEditCourse(command.UserId, exam.CourseId))
+                return Result<object>.Fail("No tiene permisos para editar examenes.");
+
+            var examSubmissionsToRemove = await _db.ExamSubmissions
+                .Where(a => a.ExamId == exam.Id)
+                .ToListAsync(cancellationToken);
+
             using var transaction = await _db.Database.BeginTransactionAsync(cancellationToken);
             try
             {
-                var exam = await _db.Exams.FindAsync([command.ExamId], cancellationToken);
-                if (exam == null) return Result<object>.Fail("El examen no existe.");
-
-                if (!await _userPermissions.CanEditCourse(command.UserId, exam.CourseId))
-                    return Result<object>.Fail("No tiene permisos para editar examenes.");
-
-                var examSubmissionsToRemove = await _db.ExamSubmissions
-                    .Where(a => a.ExamId == exam.Id)
-                    .ToListAsync(cancellationToken);
-
                 _db.Exams.Remove(exam);
-                await _db.SaveChangesAsync(cancellationToken);
 
+                List<Resource> resourcesToDelete = [];
+                foreach (var sub in examSubmissionsToRemove)
+                {
+                    var subResponse = await _cleanupService.ClearParentResources(sub.Id, ResourceParentType.ExamSubmission, cancellationToken);
+                    resourcesToDelete.AddRange(subResponse);
+                }
+
+                var examResponse = await _cleanupService.ClearParentResources(exam.Id, ResourceParentType.Exam, cancellationToken);
+                resourcesToDelete.AddRange(examResponse);
+
+                await _db.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
 
-                foreach (var sub in examSubmissionsToRemove)
-                    await _cleanupService.ClearParentResources(sub.Id, ResourceParentType.ExamSubmission, cancellationToken);
-
-                await _cleanupService.ClearParentResources(exam.Id, ResourceParentType.Exam, cancellationToken);
+                await _cleanupService.ClearResourceFiles(resourcesToDelete);
 
                 return Result<object>.Ok(new { Success = true });
             }

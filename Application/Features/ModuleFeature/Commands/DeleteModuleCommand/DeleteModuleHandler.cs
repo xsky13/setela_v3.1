@@ -12,18 +12,30 @@ namespace SetelaServerV3._1.Application.Features.ModuleFeature.Commands.DeleteMo
     {
         public async Task<Result<object>> Handle(DeleteModuleCommand command, CancellationToken cancellationToken)
         {
-            var module = await _db.Modules.FindAsync([command.ModuleId], cancellationToken);
-            if (module == null) return Result<object>.Fail("El modulo no existe", 404);
+            using var transaction = await _db.Database.BeginTransactionAsync(cancellationToken);
+            try
+            {
+                var module = await _db.Modules.FindAsync([command.ModuleId], cancellationToken);
+                if (module == null) return Result<object>.Fail("El modulo no existe", 404);
 
-            if (!await _userPermissions.CanEditCourse(command.UserId, module.CourseId))
-                return Result<object>.Fail("No tiene permisos para eliminar este modulo", 403);
+                if (!await _userPermissions.CanEditCourse(command.UserId, module.CourseId))
+                    return Result<object>.Fail("No tiene permisos para eliminar este modulo", 403);
 
-            await _cleanupService.ClearParentResources(module.Id, ResourceParentType.Module, cancellationToken);
+                var resourcesToDelete = await _cleanupService.ClearParentResources(module.Id, ResourceParentType.Module, cancellationToken);
+                _db.Modules.Remove(module);
 
-            _db.Modules.Remove(module);
-            await _db.SaveChangesAsync(cancellationToken);
+                await _db.SaveChangesAsync(cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
 
-            return Result<object>.Ok(new { Success = true });
+                await _cleanupService.ClearResourceFiles(resourcesToDelete);
+
+                return Result<object>.Ok(new { Success = true });
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                return Result<object>.Fail("Error al eliminar el modulo y sus archivos.");
+            }
         }
     }
 }
