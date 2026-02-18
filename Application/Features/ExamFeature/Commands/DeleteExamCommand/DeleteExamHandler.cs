@@ -21,8 +21,9 @@ namespace SetelaServerV3._1.Application.Features.ExamFeature.Commands.DeleteExam
             if (!await _userPermissions.CanEditCourse(command.UserId, exam.CourseId))
                 return Result<object>.Fail("No tiene permisos para editar examenes.");
 
-            var examSubmissionsToRemove = await _db.ExamSubmissions
+            var examSubmissionsIds = await _db.ExamSubmissions
                 .Where(a => a.ExamId == exam.Id)
+                .Select(e => e.Id)
                 .ToListAsync(cancellationToken);
 
             using var transaction = await _db.Database.BeginTransactionAsync(cancellationToken);
@@ -31,11 +32,9 @@ namespace SetelaServerV3._1.Application.Features.ExamFeature.Commands.DeleteExam
                 _db.Exams.Remove(exam);
 
                 List<Resource> resourcesToDelete = [];
-                foreach (var sub in examSubmissionsToRemove)
-                {
-                    var subResponse = await _cleanupService.ClearParentResources(sub.Id, ResourceParentType.ExamSubmission, cancellationToken);
-                    resourcesToDelete.AddRange(subResponse);
-                }
+
+                var subResponse = await _cleanupService.ClearMultipleResources(examSubmissionsIds, ResourceParentType.ExamSubmission, cancellationToken);
+                resourcesToDelete.AddRange(subResponse);
 
                 var examResponse = await _cleanupService.ClearParentResources(exam.Id, ResourceParentType.Exam, cancellationToken);
                 resourcesToDelete.AddRange(examResponse);

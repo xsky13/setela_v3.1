@@ -21,11 +21,10 @@ namespace SetelaServerV3._1.Application.Features.AssignmentFeature.Commands.Dele
             if (!await _userPermissions.CanEditCourse(command.UserId, assignment.CourseId))
                 return Result<object>.Fail("No puede modificar trabajos practicos en este curso", 403);
 
-            var assignmentSubmissionsToRemove = await _db.AssignmentSubmissions
-                .Select(a => new { a.Id, a.AssignmentId })
+            var assignmentSubmissionIds = await _db.AssignmentSubmissions
                 .Where(a => a.AssignmentId == assignment.Id)
+                .Select(a => a.Id)
                 .ToListAsync(cancellationToken);
-            var assignmentSubmissionIds = assignmentSubmissionsToRemove.Select(a => a.Id).ToList();
 
 
             using var transaction = await _db.Database.BeginTransactionAsync(cancellationToken);
@@ -35,10 +34,11 @@ namespace SetelaServerV3._1.Application.Features.AssignmentFeature.Commands.Dele
 
                 List<Resource> resourcesToDelete = [];
 
-                foreach (var sub in assignmentSubmissionsToRemove)
-                {
-                    resourcesToDelete = await _cleanupService.ClearParentResources(assignment.Id, ResourceParentType.Assignment, cancellationToken);
-                }
+                var response = await _cleanupService.ClearMultipleResources(assignmentSubmissionIds, ResourceParentType.AssignmentSubmission, cancellationToken);
+                resourcesToDelete.AddRange(response);
+
+                var assignmentResponse = await _cleanupService.ClearParentResources(assignment.Id, ResourceParentType.Assignment, cancellationToken);
+                resourcesToDelete.AddRange(assignmentResponse);
 
                 await _db.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
