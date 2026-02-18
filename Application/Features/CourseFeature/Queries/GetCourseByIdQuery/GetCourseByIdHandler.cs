@@ -14,7 +14,7 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature.Queries.GetCourse
         public async Task<Result<CourseDTO>> Handle(GetCourseByIdQuery query, CancellationToken cancellationToken)
         {
             var course = await _db.Courses
-                .Where(c => c.Id == query.CourseId && c.IsActive)
+                .Where(c => c.Id == query.CourseId)
                 .ProjectTo<CourseDTO>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken)
                 .LoadResources(_db, _mapper, Domain.Enums.ResourceParentType.Course, cancellationToken);

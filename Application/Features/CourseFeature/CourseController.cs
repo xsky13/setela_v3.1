@@ -26,7 +26,10 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature
         [HttpGet]
         public async Task<ActionResult<List<CourseListingDTO>>> GetCourse()
         {
-            var response = await _mediator.Send(new GetCoursesQuery());
+            ClaimsPrincipal currentUser = HttpContext.User;
+            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            var response = await _mediator.Send(new GetCoursesQuery { UserId = int.Parse(userId) });
             return Ok(response);
         }
 
@@ -47,7 +50,7 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature
 
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<ActionResult<Course>> UpdateCourse([FromBody] UpdateCourseRequestDTO request, int id)
+        public async Task<ActionResult<Course>> UpdateCourse([FromForm] UpdateCourseRequestDTO request, int id)
         {
             ClaimsPrincipal currentUser = HttpContext.User;
             string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
@@ -57,7 +60,8 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature
                 Id = id,
                 UserId = int.Parse(userId),
                 Title = request.Title,
-                Description = request.Description
+                Description = request.Description,
+                IsActive = request.IsActive
             };
 
             var response = await _mediator.Send(command);

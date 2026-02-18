@@ -15,7 +15,7 @@ namespace SetelaServerV3._1.Application.Features.UserFeature.Queries.GetUserById
             var user = await _db.SysUsers
                 .AsSplitQuery()
                 .Include(u => u.ProfessorCourses)
-                .Include(u => u.Enrollments).ThenInclude(e => e.Course)
+                .Include(u => u.Enrollments.Where(e => e.Valid)).ThenInclude(e => e.Course)
                 .FirstOrDefaultAsync(user => user.Id == query.Id, cancellationToken);
 
             if (user == null) return Result<UserDTO>.Fail("El usuario no existe", 404);

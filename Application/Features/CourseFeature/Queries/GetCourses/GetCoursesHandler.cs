@@ -14,10 +14,25 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature.Queries.GetCourse
 
         public async Task<List<CourseListingDTO>> Handle(GetCoursesQuery query, CancellationToken cancellationToken)
         {
-            var courses = await _db.Courses
-                .Where(c => c.IsActive)
-                .ProjectTo<CourseListingDTO>(_mapper.ConfigurationProvider)
-                .ToListAsync(cancellationToken);
+
+            var user = await _db.SysUsers
+                .Where(u => u.Id == query.UserId)
+                .Select(u => new { u.Roles })
+                .FirstOrDefaultAsync(cancellationToken);
+
+            List<CourseListingDTO> courses = [];
+            if (user.Roles.Contains(Domain.Enums.UserRoles.Admin))
+            {
+                courses = await _db.Courses
+                    .ProjectTo<CourseListingDTO>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken);
+            } else
+            {
+                courses = await _db.Courses
+                    .Where(c => c.IsActive)
+                    .ProjectTo<CourseListingDTO>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken);
+            }
             return courses;
         }
 

@@ -20,6 +20,11 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature.Commands.UpdateCo
 
             course.Title = command.Title;
             course.Description = command.Description;
+            course.IsActive = command.IsActive;
+
+            await _db.Enrollments
+                .Where(e => e.CourseId == course.Id && e.Valid != command.IsActive)
+                .ExecuteUpdateAsync(s => s.SetProperty(e => e.Valid, command.IsActive), cancellationToken);
 
             await _db.SaveChangesAsync(cancellationToken);
 

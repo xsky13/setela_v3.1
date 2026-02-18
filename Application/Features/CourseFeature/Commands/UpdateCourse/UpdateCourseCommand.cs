@@ -9,6 +9,7 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature.Commands.UpdateCo
     {
         public int Id { get; set; }
         public int UserId { get; set; }
+        public bool IsActive { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
     }

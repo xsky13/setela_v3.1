@@ -6,5 +6,6 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature.Queries.GetCourse
 {
     public class GetCoursesQuery : IRequest<List<CourseListingDTO>>
     {
+        public int UserId { get; set; }
     }
 }
