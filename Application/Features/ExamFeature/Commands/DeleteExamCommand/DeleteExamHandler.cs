@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SetelaServerV3._1.Application.Features.ExamFeature.DTO;
 using SetelaServerV3._1.Domain.Entities;
 using SetelaServerV3._1.Domain.Enums;
@@ -14,18 +15,36 @@ namespace SetelaServerV3._1.Application.Features.ExamFeature.Commands.DeleteExam
     {
         public async Task<Result<object>> Handle(DeleteExamCommand command, CancellationToken cancellationToken)
         {
-            var exam = await _db.Exams.FindAsync([command.ExamId], cancellationToken);
-            if (exam == null) return Result<object>.Fail("El examen no existe.");
+            using var transaction = await _db.Database.BeginTransactionAsync(cancellationToken);
+            try
+            {
+                var exam = await _db.Exams.FindAsync([command.ExamId], cancellationToken);
+                if (exam == null) return Result<object>.Fail("El examen no existe.");
 
-            if (!await _userPermissions.CanEditCourse(command.UserId, exam.CourseId))
-                return Result<object>.Fail("No tiene permisos para editar examenes.");
+                if (!await _userPermissions.CanEditCourse(command.UserId, exam.CourseId))
+                    return Result<object>.Fail("No tiene permisos para editar examenes.");
 
-            await _cleanupService.ClearParentResources(exam.Id, ResourceParentType.Exam, cancellationToken);
+                var examSubmissionsToRemove = await _db.ExamSubmissions
+                    .Where(a => a.ExamId == exam.Id)
+                    .ToListAsync(cancellationToken);
 
-            _db.Exams.Remove(exam);
-            await _db.SaveChangesAsync(cancellationToken);
+                _db.Exams.Remove(exam);
+                await _db.SaveChangesAsync(cancellationToken);
 
-            return Result<object>.Ok(new { Success = true });
+                await transaction.CommitAsync(cancellationToken);
+
+                foreach (var sub in examSubmissionsToRemove)
+                    await _cleanupService.ClearParentResources(sub.Id, ResourceParentType.ExamSubmission, cancellationToken);
+
+                await _cleanupService.ClearParentResources(exam.Id, ResourceParentType.Exam, cancellationToken);
+
+                return Result<object>.Ok(new { Success = true });
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                return Result<object>.Fail("Error al eliminar la entrega y sus archivos.");
+            }
         }
     }
 }

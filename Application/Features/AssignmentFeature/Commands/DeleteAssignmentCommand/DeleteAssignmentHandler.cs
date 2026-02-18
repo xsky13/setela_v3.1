@@ -14,23 +14,37 @@ namespace SetelaServerV3._1.Application.Features.AssignmentFeature.Commands.Dele
     {
         public async Task<Result<object>> Handle(DeleteAssignmentCommand command, CancellationToken cancellationToken)
         {
-            var assignment = await _db.Assignments.FindAsync([command.AssignmentId], cancellationToken);
-            if (assignment == null) return Result<object>.Fail("El trabajo practico no existe");
+            using var transaction = await _db.Database.BeginTransactionAsync(cancellationToken);
+            try
+            {
+                var assignment = await _db.Assignments.FindAsync([command.AssignmentId], cancellationToken);
+                if (assignment == null) return Result<object>.Fail("El trabajo practico no existe");
 
-            if (!await _userPermissions.CanEditCourse(command.UserId, assignment.CourseId))
-                return Result<object>.Fail("No puede modificar trabajos practicos en este curso", 403);
+                if (!await _userPermissions.CanEditCourse(command.UserId, assignment.CourseId))
+                    return Result<object>.Fail("No puede modificar trabajos practicos en este curso", 403);
 
-            var resourcesToDelete = await _db.Resources
-                .Where(r => r.ParentId == assignment.Id && r.ParentType == Domain.Enums.ResourceParentType.Assignment)
-                .ToListAsync(cancellationToken);
+                var assignmentSubmissionsToRemove = await _db.AssignmentSubmissions
+                    .Where(a => a.AssignmentId == assignment.Id)
+                    .ToListAsync(cancellationToken);
 
-            await _cleanupService.ClearParentResources(assignment.Id, ResourceParentType.Assignment, cancellationToken);
 
-            _db.Resources.RemoveRange(resourcesToDelete);
-            _db.Assignments.Remove(assignment);
-            await _db.SaveChangesAsync(cancellationToken);
+                _db.Assignments.Remove(assignment);
+                await _db.SaveChangesAsync(cancellationToken);
 
-            return Result<object>.Ok(new { Success = true });
+                await transaction.CommitAsync(cancellationToken);
+
+                foreach (var sub in assignmentSubmissionsToRemove)
+                    await _cleanupService.ClearParentResources(sub.Id, ResourceParentType.AssignmentSubmission, cancellationToken);
+
+                await _cleanupService.ClearParentResources(assignment.Id, ResourceParentType.Assignment, cancellationToken);
+
+                return Result<object>.Ok(new { Success = true });
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                return Result<object>.Fail("Error al eliminar la entrega y sus archivos.");
+            }
         }
     }
 }
