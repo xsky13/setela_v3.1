@@ -6,6 +6,7 @@ using SetelaServerV3._1.Application.Features.CourseFeature.Commands.CreateCourse
 using SetelaServerV3._1.Application.Features.CourseFeature.Commands.DeleteCourseCommand;
 using SetelaServerV3._1.Application.Features.CourseFeature.Commands.DisenrollStudentCommand;
 using SetelaServerV3._1.Application.Features.CourseFeature.Commands.EnrollStudentCommand;
+using SetelaServerV3._1.Application.Features.CourseFeature.Commands.HardDeleteCourseCommand;
 using SetelaServerV3._1.Application.Features.CourseFeature.Commands.RemoveProfessorCommand;
 using SetelaServerV3._1.Application.Features.CourseFeature.Commands.UpdateCourse;
 using SetelaServerV3._1.Application.Features.CourseFeature.DTO;
@@ -76,6 +77,23 @@ namespace SetelaServerV3._1.Application.Features.CourseFeature
             string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             var command = new DeleteCourseCommand
+            {
+                UserId = int.Parse(userId),
+                CourseId = id
+            };
+
+            var response = await _mediator.Send(command);
+            return response.ToActionResult();
+        }
+
+        [Authorize]
+        [HttpDelete("{id}/hardDelete")]
+        public async Task<ActionResult<object>> HardDeleteCourse(int id)
+        {
+            ClaimsPrincipal currentUser = HttpContext.User;
+            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            var command = new HardDeleteCourseCommand
             {
                 UserId = int.Parse(userId),
                 CourseId = id
