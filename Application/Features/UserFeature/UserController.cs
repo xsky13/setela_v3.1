@@ -19,9 +19,15 @@ namespace SetelaServerV3._1.Application.Features.UserFeature
     {
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<List<UserDTO>>> GetUsers()
+        public async Task<ActionResult<List<UserListingDTO>>> GetUsers()
         {
-            return Ok(await _mediator.Send(new GetUsersQuery()));
+            ClaimsPrincipal currentUser = HttpContext.User;
+            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            return Ok(await _mediator.Send(new GetUsersQuery
+            {
+                UserId = int.Parse(userId)
+            }));
         }
 
         [Authorize]

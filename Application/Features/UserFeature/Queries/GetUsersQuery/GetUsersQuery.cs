@@ -3,7 +3,8 @@ using SetelaServerV3._1.Application.Features.UserFeature.DTO;
 
 namespace SetelaServerV3._1.Application.Features.UserFeature.Queries.GetUsersQuery
 {
-    public class GetUsersQuery : IRequest<List<UserDTO>>
+    public class GetUsersQuery : IRequest<List<UserListingDTO>>
     {
+        public int UserId { get; set; }
     }
 }

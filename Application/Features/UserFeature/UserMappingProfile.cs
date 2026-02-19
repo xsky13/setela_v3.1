@@ -16,6 +16,8 @@ namespace SetelaServerV3._1.Application.Features.UserFeature
                 .ForMember(dest => dest.CourseId, opt => opt.MapFrom(src => src.Course.Id))
                 .ForMember(dest => dest.CourseTitle, opt => opt.MapFrom(src => src.Course.Title));
 
+            CreateMap<SysUser, UserListingDTO>();
+
             CreateMap<SysUser, UserDTO>();
         }
     }
