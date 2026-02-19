@@ -58,7 +58,8 @@ namespace SetelaServerV3._1.Application.Features.UserFeature
                 UserId = id,
                 UserRoles = userRoleEnums,
                 Name = request.Name,
-                Email = request.Email
+                Email = request.Email,
+                Password = request.Password
             });
 
             return response.ToActionResult();

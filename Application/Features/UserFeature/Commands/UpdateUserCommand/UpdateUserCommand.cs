@@ -12,5 +12,6 @@ namespace SetelaServerV3._1.Application.Features.UserFeature.Commands.UpdateUser
         public List<UserRoles> UserRoles { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
+        public string? Password { get; set; }
     }
 }
