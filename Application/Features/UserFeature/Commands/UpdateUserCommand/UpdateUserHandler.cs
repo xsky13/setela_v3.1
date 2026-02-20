@@ -19,6 +19,7 @@ namespace SetelaServerV3._1.Application.Features.UserFeature.Commands.UpdateUser
                 .Where(u => u.Id == command.CurrentUserId)
                 .Select(u => new { u.Roles })
                 .FirstOrDefaultAsync(cancellationToken);
+            if (updatingUser == null) return Result<UserDTO>.Fail("El usuario no existe");
 
             var user = await _db.SysUsers.FirstOrDefaultAsync(user => user.Id == command.UserId, cancellationToken);
             if (user == null) return Result<UserDTO>.Fail("El usuario no existe");

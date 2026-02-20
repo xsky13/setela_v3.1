@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.AddTimeCommand;
 using SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.CreateExamSubmissionCommand;
 using SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.DeleteExamSubmissionCommand;
 using SetelaServerV3._1.Application.Features.ExamSubmissionFeature.Commands.FinishExamCommand;
@@ -43,6 +44,7 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature
             return response.ToActionResult();
         }
 
+
         [Authorize]
         [HttpPost("{id}/finish")]
         public async Task<ActionResult<ExamSubmissionDTO>> FinishExam([FromForm] FinishExamSubmissionRequestDTO request, int id)
@@ -58,6 +60,22 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature
                 BaseUrl = $"{Request.Scheme}://{Request.Host}",
                 CourseId = request.CourseId,
                 Files = request.Files,
+            });
+            return response.ToActionResult();
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<ActionResult<ExamSubmissionDTO>> AddTimeToExamSubmission([FromBody] AddTimeRequestDTO request)
+        {
+            ClaimsPrincipal currentUser = HttpContext.User;
+            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            var response = await _mediator.Send(new AddTimeCommand
+            {
+                UserId = int.Parse(userId),
+                ExamSubmissionId = request.ExamSubmissionId,
+                CourseId = request.CourseId
             });
             return response.ToActionResult();
         }

@@ -12,5 +12,6 @@
         public SysUser SysUser { get; set; }
         public int ExamId { get; set; }
         public Exam Exam { get; set; }
+        public bool AdminExtendedTime { get; set; } = false;
     }
 }

@@ -17,5 +17,6 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature.DTO
         public ExamSimpleDTO Exam { get; set; }
         public GradeSimpleDTO? Grade { get; set; }
         public List<CourseResourceDTO>? Resources { get; set; }
+        public bool AdminExtendedTime { get; set; }
     }
 }
