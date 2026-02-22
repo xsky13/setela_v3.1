@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SetelaServerV3._1.Application.Features.ResourceFeature.Commands.CreateMultipleResourcesCommand;
 using SetelaServerV3._1.Application.Features.ResourceFeature.Commands.CreateResourceCommand;
 using SetelaServerV3._1.Application.Features.ResourceFeature.Commands.DeleteResourceCommand;
 using SetelaServerV3._1.Application.Features.ResourceFeature.Commands.UpdateResourceCommand;
@@ -17,6 +18,24 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature
     [Route("api/[controller]")]
     public class ResourceController(IMediator _mediator, IFileStorage _storageService) : ControllerBase
     {
+        [Authorize]
+        [HttpPost("/multiple")]
+        public async Task<ActionResult<List<Resource>>> CreateMultipleResources([FromForm] CreateMultipleResourcesRequestDTO request)
+        {
+            ClaimsPrincipal currentUser = HttpContext.User;
+            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            var response = await _mediator.Send(new CreateMultipleResourcesCommand
+            {
+                UserId = int.Parse(userId),
+                BaseUrl = $"{Request.Scheme}://{Request.Host}",
+                Request = request
+            });
+
+            return response.ToActionResult();
+        }
+
+
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<Resource>> CreateResource([FromForm] CreateResourceRequestDTO request)
