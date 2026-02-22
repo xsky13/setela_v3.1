@@ -17,7 +17,15 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Create
                 return Result<List<Resource>>.Fail("Incorrect resource parent type");
 
             if (!await ParentExistsAsync(parentResourceType, command.Request.ParentId, cancellationToken))
-                return Result<List<Resource>>.Fail("La entidad no existe", 404);
+                return Result<List<Resource>>.Fail($"La entidad no existe", 404);
+
+            // check if parent has more than 10 resources
+            var resourceAmount = await _db.Resources
+                .Where(r => r.ParentId == command.Request.ParentId)
+                .CountAsync(cancellationToken);
+
+            if ((resourceAmount + command.Request.Files.Count) > 7)
+                return Result<List<Resource>>.Fail($"No puede haber mas de 7 archivos por entrega.");
 
             bool canEdit = await _userPermissions.CanModifyResource(parentResourceType, command.UserId, command.Request.CourseId);
             if (!canEdit) return Result<List<Resource>>.Fail("No tiene permisos para crear recursos", 403);

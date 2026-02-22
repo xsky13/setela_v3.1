@@ -19,7 +19,7 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature
     public class ResourceController(IMediator _mediator, IFileStorage _storageService) : ControllerBase
     {
         [Authorize]
-        [HttpPost("/multiple")]
+        [HttpPost("multiple")]
         public async Task<ActionResult<List<Resource>>> CreateMultipleResources([FromForm] CreateMultipleResourcesRequestDTO request)
         {
             ClaimsPrincipal currentUser = HttpContext.User;
