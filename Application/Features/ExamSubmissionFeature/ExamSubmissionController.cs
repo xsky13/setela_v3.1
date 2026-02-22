@@ -65,8 +65,8 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature
         }
 
         [Authorize]
-        [HttpPost]
-        public async Task<ActionResult<ExamSubmissionDTO>> AddTimeToExamSubmission([FromBody] AddTimeRequestDTO request)
+        [HttpPost("{id}/add_time")]
+        public async Task<ActionResult<ExamSubmissionDTO>> AddTimeToExamSubmission([FromBody] AddTimeRequestDTO request, int id)
         {
             ClaimsPrincipal currentUser = HttpContext.User;
             string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
@@ -74,7 +74,7 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature
             var response = await _mediator.Send(new AddTimeCommand
             {
                 UserId = int.Parse(userId),
-                ExamSubmissionId = request.ExamSubmissionId,
+                ExamSubmissionId = id,
                 CourseId = request.CourseId
             });
             return response.ToActionResult();

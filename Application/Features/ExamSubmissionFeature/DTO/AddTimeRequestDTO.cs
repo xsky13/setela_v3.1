@@ -2,7 +2,6 @@
 {
     public class AddTimeRequestDTO
     {
-        public int ExamSubmissionId { get; set; }
         public int CourseId { get; set; }
     }
 }
