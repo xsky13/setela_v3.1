@@ -20,6 +20,8 @@ namespace SetelaServerV3._1.Shared.Common
 
             CreateMap<SysUser, UserSimpleDTO>();
             CreateMap<Resource, CourseResourceDTO>();
+
+            CreateMap<UserProgress, UserProgressDTO>();
         }
     }
 }
