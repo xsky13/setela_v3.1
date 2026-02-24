@@ -21,6 +21,8 @@ namespace SetelaServerV3._1.Application.Features.ModuleFeature.Commands.DeleteMo
                 if (!await _userPermissions.CanEditCourse(command.UserId, module.CourseId))
                     return Result<object>.Fail("No tiene permisos para eliminar este modulo", 403);
 
+                await _cleanupService.ClearProgress(ProgressParentType.Module, module.Id);
+
                 var resourcesToDelete = await _cleanupService.ClearParentResources(module.Id, ResourceParentType.Module, cancellationToken);
                 _db.Modules.Remove(module);
 

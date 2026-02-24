@@ -1,7 +1,5 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using SetelaServerV3._1.Application.Features.AssignmentFeature.DTO;
-using SetelaServerV3._1.Application.Features.ResourceFeature.Commands.DeleteResourceCommand;
 using SetelaServerV3._1.Domain.Entities;
 using SetelaServerV3._1.Domain.Enums;
 using SetelaServerV3._1.Infrastructure.Data;
@@ -30,6 +28,8 @@ namespace SetelaServerV3._1.Application.Features.AssignmentFeature.Commands.Dele
             using var transaction = await _db.Database.BeginTransactionAsync(cancellationToken);
             try
             {
+                await _cleanupService.ClearProgress(ProgressParentType.Assignment, assignment.Id);
+
                 _db.Assignments.Remove(assignment);
 
                 List<Resource> resourcesToDelete = [];

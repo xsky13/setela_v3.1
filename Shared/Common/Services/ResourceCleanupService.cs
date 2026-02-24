@@ -34,6 +34,16 @@ namespace SetelaServerV3._1.Shared.Common.Services
             return resourcesToDelete;
         }
 
+        public async Task ClearProgress(ProgressParentType parentType, int parentId, CancellationToken ct)
+        {
+            var progressItems = await _db.UserProgress
+                .Where(p => p.ParentType == parentType && p.ParentId == parentId)
+                .ToListAsync(ct);
+
+            if (progressItems.Count != 0)
+                _db.UserProgress.RemoveRange(progressItems);
+        }
+
         public async Task ClearResourceFiles(List<Resource> resources)
         {
             foreach (var rd in resources)
