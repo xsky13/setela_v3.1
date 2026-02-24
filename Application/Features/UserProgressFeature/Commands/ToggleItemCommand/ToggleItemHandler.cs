@@ -6,7 +6,7 @@ using SetelaServerV3._1.Infrastructure.Data;
 using SetelaServerV3._1.Shared.Common.DTO;
 using SetelaServerV3._1.Shared.Utilities;
 
-namespace SetelaServerV3._1.Application.Features.UserProgressFeature.ToggleItemCommand
+namespace SetelaServerV3._1.Application.Features.UserProgressFeature.Commands.ToggleItemCommand
 {
     public class ToggleItemHandler(AppDbContext _db, IMapper _mapper) : IRequestHandler<ToggleItemCommand, Result<UserProgressDTO>>
     {
