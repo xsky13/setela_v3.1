@@ -21,6 +21,8 @@ namespace SetelaServerV3._1.Application.Features.UserProgressFeature.Commands.To
             if (progressItem != null)
             {
                 _db.UserProgress.Remove(progressItem);
+                await _db.SaveChangesAsync(cancellationToken);
+                return Result<UserProgressDTO>.Ok(null);
             }
             else
             {

@@ -5,5 +5,6 @@
         Module = 1,
         Assignment = 2,
         Exam = 3,
+        Resource = 4
     }
 }

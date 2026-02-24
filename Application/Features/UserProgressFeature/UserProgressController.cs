@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SetelaServerV3._1.Application.Features.UserProgressFeature.Commands.ToggleItemCommand;
 using SetelaServerV3._1.Application.Features.UserProgressFeature.DTO;
+using SetelaServerV3._1.Application.Features.UserProgressFeature.Queries.GetProgressItemsQuery;
 using SetelaServerV3._1.Application.Features.UserProgressFeature.Queries.GetProgressQuery;
 using SetelaServerV3._1.Shared.Common.DTO;
 using SetelaServerV3._1.Shared.Utilities;
@@ -22,7 +23,21 @@ namespace SetelaServerV3._1.Application.Features.UserProgressFeature
             var response = await _mediator.Send(new GetProgressQuery
             {
                 CourseId = id,
-                UserId  = int.Parse(userId)
+                UserId = int.Parse(userId)
+            });
+            return response.ToActionResult();
+        }
+
+        [HttpGet("{id}/get_items")]
+        public async Task<ActionResult<List<UserProgressDTO>>> GetProgressItem(int id)
+        {
+            ClaimsPrincipal currentUser = HttpContext.User;
+            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            var response = await _mediator.Send(new GetProgressItemsQuery
+            {
+                CourseId = id,
+                UserId = int.Parse(userId)
             });
             return response.ToActionResult();
         }
