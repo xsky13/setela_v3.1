@@ -8,6 +8,6 @@ namespace SetelaServerV3._1.Shared.Common.Interfaces
         Task<List<Resource>> ClearParentResources(int parentId, ResourceParentType parentType, CancellationToken ct);
         Task<List<Resource>> ClearMultipleResources(List<int> parentIds, ResourceParentType parentType, CancellationToken ct);
         Task ClearResourceFiles(List<Resource> resources);
-        Task ClearProgress(ProgressParentType parentType, int parentId);
+        Task ClearProgress(ProgressParentType parentType, int parentId, CancellationToken ct);
     }
 }

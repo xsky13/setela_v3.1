@@ -9,7 +9,7 @@ using SetelaServerV3._1.Shared.Utilities;
 
 namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.DeleteResourceCommand
 {
-    public class DeleteResourceHandler(AppDbContext _db, IPermissionHandler _userPermissions, IFileStorage _storageService) : IRequestHandler<DeleteResourceCommand, Result<object>>
+    public class DeleteResourceHandler(AppDbContext _db, IPermissionHandler _userPermissions, IFileStorage _storageService, IResourceCleanupService _cleanupService) : IRequestHandler<DeleteResourceCommand, Result<object>>
     {
         public async Task<Result<object>> Handle(DeleteResourceCommand command, CancellationToken cancellationToken)
         {
@@ -39,6 +39,9 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Delete
                 var result = await _storageService.DeleteFile(resource.Url, command.UserId);
                 if (!result.Success) return Result<object>.Fail(result.Error);
             }
+
+            await _cleanupService.ClearProgress(ProgressParentType.Resource, resource.Id, cancellationToken);
+
 
             _db.Resources.Remove(resource);
             await _db.SaveChangesAsync(cancellationToken);

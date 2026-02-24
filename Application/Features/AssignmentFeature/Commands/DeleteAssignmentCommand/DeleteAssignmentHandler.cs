@@ -28,7 +28,7 @@ namespace SetelaServerV3._1.Application.Features.AssignmentFeature.Commands.Dele
             using var transaction = await _db.Database.BeginTransactionAsync(cancellationToken);
             try
             {
-                await _cleanupService.ClearProgress(ProgressParentType.Assignment, assignment.Id);
+                await _cleanupService.ClearProgress(ProgressParentType.Assignment, assignment.Id, cancellationToken);
 
                 _db.Assignments.Remove(assignment);
 

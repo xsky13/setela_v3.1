@@ -12,16 +12,16 @@ namespace SetelaServerV3._1.Application.Features.ModuleFeature.Commands.DeleteMo
     {
         public async Task<Result<object>> Handle(DeleteModuleCommand command, CancellationToken cancellationToken)
         {
+            var module = await _db.Modules.FindAsync([command.ModuleId], cancellationToken);
+            if (module == null) return Result<object>.Fail("El modulo no existe", 404);
+
+            if (!await _userPermissions.CanEditCourse(command.UserId, module.CourseId))
+                return Result<object>.Fail("No tiene permisos para eliminar este modulo", 403);
+
             using var transaction = await _db.Database.BeginTransactionAsync(cancellationToken);
             try
             {
-                var module = await _db.Modules.FindAsync([command.ModuleId], cancellationToken);
-                if (module == null) return Result<object>.Fail("El modulo no existe", 404);
-
-                if (!await _userPermissions.CanEditCourse(command.UserId, module.CourseId))
-                    return Result<object>.Fail("No tiene permisos para eliminar este modulo", 403);
-
-                await _cleanupService.ClearProgress(ProgressParentType.Module, module.Id);
+                await _cleanupService.ClearProgress(ProgressParentType.Module, module.Id, cancellationToken);
 
                 var resourcesToDelete = await _cleanupService.ClearParentResources(module.Id, ResourceParentType.Module, cancellationToken);
                 _db.Modules.Remove(module);

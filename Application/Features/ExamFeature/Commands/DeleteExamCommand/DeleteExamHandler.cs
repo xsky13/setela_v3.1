@@ -29,7 +29,7 @@ namespace SetelaServerV3._1.Application.Features.ExamFeature.Commands.DeleteExam
             using var transaction = await _db.Database.BeginTransactionAsync(cancellationToken);
             try
             {
-                await _cleanupService.ClearProgress(ProgressParentType.Exam, exam.Id);
+                await _cleanupService.ClearProgress(ProgressParentType.Exam, exam.Id, cancellationToken);
                 _db.Exams.Remove(exam);
 
                 List<Resource> resourcesToDelete = [];
