@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using SetelaServerV3._1.Application.Features.UserProgressFeature.Commands.ToggleItemCommand;
 using SetelaServerV3._1.Application.Features.UserProgressFeature.DTO;
 using SetelaServerV3._1.Application.Features.UserProgressFeature.Queries.GetProgressQuery;
-using SetelaServerV3._1.Application.Features.UserProgressFeature.ToggleItemCommand;
 using SetelaServerV3._1.Shared.Common.DTO;
 using SetelaServerV3._1.Shared.Utilities;
 using System.Security.Claims;
