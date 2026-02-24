@@ -5,6 +5,7 @@ using SetelaServerV3._1.Application.Features.GradeFeature.Commands.CreateGradeCo
 using SetelaServerV3._1.Application.Features.GradeFeature.Commands.DeleteGradeCommand;
 using SetelaServerV3._1.Application.Features.GradeFeature.Commands.UpdateGradeCommand;
 using SetelaServerV3._1.Application.Features.GradeFeature.DTO;
+using SetelaServerV3._1.Application.Features.GradeFeature.Queries.GetGradesForStudentQuery;
 using SetelaServerV3._1.Shared.Utilities;
 using System.Security.Claims;
 
@@ -14,6 +15,22 @@ namespace SetelaServerV3._1.Application.Features.GradeFeature
     [Route("api/[controller]")]
     public class GradeController(IMediator _mediator) : ControllerBase
     {
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<List<GradeDTO>>> GetGradesForStudent(int id)
+        {
+            ClaimsPrincipal currentUser = HttpContext.User;
+            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            var response = await _mediator.Send(new GetGradesForStudentQuery
+            {
+                CourseId = id,
+                UserId = int.Parse(userId),
+            });
+            return response.ToActionResult();
+        }
+
+
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<GradeDTO>> CreateGrade([FromBody] CreateGradeRequestDTO request)
