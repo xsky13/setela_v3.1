@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature.DTO;
+using SetelaServerV3._1.Domain.Enums;
 using SetelaServerV3._1.Infrastructure.Data;
 using SetelaServerV3._1.Shared.Utilities;
 
@@ -13,8 +15,14 @@ namespace SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature.Com
             var assignmentSubmission = await _db.AssignmentSubmissions.FindAsync([command.AssignmentSubmissionId], cancellationToken);
             if (assignmentSubmission == null) return Result<AssignmentSubmissionDTO>.Fail("El trabajo practico no existe");
 
+            var grade = await _db.Grades
+                .FirstOrDefaultAsync(g => g.ParentType == GradeParentType.AssignmentSubmission 
+                                          && g.ParentId == assignmentSubmission.Id, cancellationToken);
+
             if (command.UserId != assignmentSubmission.SysUserId)
                 return Result<AssignmentSubmissionDTO>.Fail("No puede editar este trabajo practico");
+
+            if (grade != null) return Result<AssignmentSubmissionDTO>.Fail("Este trabajo ya tiene nota.");
 
             if (command.AssignmentSubmission.TextContent != null) assignmentSubmission.TextContent = command.AssignmentSubmission.TextContent;
 

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature.DTO;
 using SetelaServerV3._1.Domain.Entities;
 using SetelaServerV3._1.Domain.Enums;
 using SetelaServerV3._1.Infrastructure.Data;
@@ -29,6 +30,11 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Create
             // if this is an assignment submission update the last updated timestamp
             if (parentResourceType == ResourceParentType.AssignmentSubmission)
             {
+                var grade = await _db.Grades
+                    .FirstOrDefaultAsync(g => g.ParentType == GradeParentType.AssignmentSubmission
+                                          && g.ParentId == command.ParentId, cancellationToken);
+                if (grade != null) return Result<Resource>.Fail("Este trabajo ya tiene nota.");
+
                 await _db.AssignmentSubmissions
                     .Where(a => a.Id == command.ParentId)
                     .ExecuteUpdateAsync(s => s.SetProperty(b => b.LastUpdateDate, DateTime.UtcNow), cancellationToken);
