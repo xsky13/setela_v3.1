@@ -3,12 +3,13 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SetelaServerV3._1.Application.Features.UserFeature.DTO;
 using SetelaServerV3._1.Infrastructure.Data;
+using SetelaServerV3._1.Shared.Common.Interfaces;
 using SetelaServerV3._1.Shared.Policies;
 using SetelaServerV3._1.Shared.Utilities;
 
 namespace SetelaServerV3._1.Application.Features.UserFeature.Commands.UpdateUserCommand
 {
-    public class UpdateUserHandler(AppDbContext _db, IMapper _mapper, IPermissionHandler _userPermissions) : IRequestHandler<UpdateUserCommand, Result<UserDTO>>
+    public class UpdateUserHandler(AppDbContext _db, IMapper _mapper, IPermissionHandler _userPermissions, IFileStorage _storageService) : IRequestHandler<UpdateUserCommand, Result<UserDTO>>
     {
         public async Task<Result<UserDTO>> Handle(UpdateUserCommand command, CancellationToken cancellationToken)
         {
@@ -26,6 +27,12 @@ namespace SetelaServerV3._1.Application.Features.UserFeature.Commands.UpdateUser
 
             var userWithEmailExists = await _db.SysUsers.AnyAsync(user => user.Email == command.Email && user.Id != command.UserId, cancellationToken);
             if (userWithEmailExists) return Result<UserDTO>.Fail("Ya hay un usuario con este email");
+
+            if (command.NewPicture != null)
+            {
+                var filename = await _storageService.SaveFile(command.NewPicture, command.UserId);
+                user.UserImageUrl = command.BaseUrl + "/cdn/" + command.UserId + '/' + filename.Value;
+            }
 
             /**/
 

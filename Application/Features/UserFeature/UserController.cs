@@ -40,7 +40,7 @@ namespace SetelaServerV3._1.Application.Features.UserFeature
 
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<ActionResult<UserDTO>> UpdateUser([FromBody] UpdateUserRequestDTO request, int id)
+        public async Task<ActionResult<UserDTO>> UpdateUser([FromForm] UpdateUserRequestDTO request, int id)
         {
             ClaimsPrincipal currentUser = HttpContext.User;
             string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
@@ -59,7 +59,9 @@ namespace SetelaServerV3._1.Application.Features.UserFeature
                 UserRoles = userRoleEnums,
                 Name = request.Name,
                 Email = request.Email,
-                Password = request.Password
+                Password = request.Password,
+                NewPicture = request.NewPicture,
+                BaseUrl = $"{Request.Scheme}://{Request.Host}",
             });
 
             return response.ToActionResult();
