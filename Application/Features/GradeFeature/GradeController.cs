@@ -30,6 +30,18 @@ namespace SetelaServerV3._1.Application.Features.GradeFeature
             return response.ToActionResult();
         }
 
+        [Authorize]
+        [HttpGet("{id}/user/{userId}")]
+        public async Task<ActionResult<List<GradeDTO>>> GetGradesForUser(int id, int userId)
+        {
+            var response = await _mediator.Send(new GetGradesForStudentQuery
+            {
+                CourseId = id,
+                UserId = userId,
+            });
+            return response.ToActionResult();
+        }
+
 
         [Authorize]
         [HttpPost]
