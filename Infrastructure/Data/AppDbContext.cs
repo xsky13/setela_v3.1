@@ -43,7 +43,7 @@ namespace SetelaServerV3._1.Infrastructure.Data
                 .WithMany()
                 .HasForeignKey(r => r.CourseId)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
        
