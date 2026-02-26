@@ -5,9 +5,11 @@ using SetelaServerV3._1.Application.Features.UserFeature.Commands.AddRoleToUserC
 using SetelaServerV3._1.Application.Features.UserFeature.Commands.RemoveRoleFromUserCommand;
 using SetelaServerV3._1.Application.Features.UserFeature.Commands.UpdateUserCommand;
 using SetelaServerV3._1.Application.Features.UserFeature.DTO;
+using SetelaServerV3._1.Application.Features.UserFeature.Queries.GetProfessorsQuery;
 using SetelaServerV3._1.Application.Features.UserFeature.Queries.GetUserByIdQuery;
 using SetelaServerV3._1.Application.Features.UserFeature.Queries.GetUsersQuery;
 using SetelaServerV3._1.Domain.Enums;
+using SetelaServerV3._1.Shared.Common.DTO;
 using SetelaServerV3._1.Shared.Utilities;
 using System.Security.Claims;
 
@@ -28,6 +30,17 @@ namespace SetelaServerV3._1.Application.Features.UserFeature
             {
                 UserId = int.Parse(userId)
             }));
+        }
+
+        [Authorize]
+        [HttpGet("professors")]
+        public async Task<ActionResult<List<UserSimpleDTO>>> GetProfessors()
+        {
+
+            var response = await _mediator.Send(new GetProfessorsQuery
+            {
+            });
+            return response.ToActionResult();
         }
 
         [Authorize]
