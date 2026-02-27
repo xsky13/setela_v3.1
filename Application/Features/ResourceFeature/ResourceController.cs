@@ -20,10 +20,14 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature
     {
         [Authorize]
         [HttpPost("multiple")]
+        [RequestSizeLimit(100 * 1024 * 1024)]
         public async Task<ActionResult<List<Resource>>> CreateMultipleResources([FromForm] CreateMultipleResourcesRequestDTO request)
         {
             ClaimsPrincipal currentUser = HttpContext.User;
             string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            var filesVerified = await _storageService.VerifyMultiple(request.Files);
+            if (!filesVerified.Success) return BadRequest(filesVerified.Error);
 
             var response = await _mediator.Send(new CreateMultipleResourcesCommand
             {
@@ -38,6 +42,7 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature
 
         [Authorize]
         [HttpPost]
+        [RequestSizeLimit(50 * 1024 * 1024)]
         public async Task<ActionResult<Resource>> CreateResource([FromForm] CreateResourceRequestDTO request)
         {
             ClaimsPrincipal currentUser = HttpContext.User;
@@ -47,6 +52,9 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature
             {
                 return BadRequest("El recurso debe tener o una url o un archivo.");
             }
+
+            var fileVerified = await _storageService.VerifySingle(request.File);
+            if (!fileVerified.Success) return BadRequest(fileVerified.Error);
 
             string finalPath = string.Empty;
 

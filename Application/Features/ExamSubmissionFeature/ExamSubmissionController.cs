@@ -59,7 +59,6 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature
                 TextContent = request.TextContent,
                 BaseUrl = $"{Request.Scheme}://{Request.Host}",
                 CourseId = request.CourseId,
-                Files = request.Files,
             });
             return response.ToActionResult();
         }

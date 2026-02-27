@@ -6,5 +6,8 @@ namespace SetelaServerV3._1.Shared.Common.Interfaces
     {
         Task<Result<string>> SaveFile(IFormFile file, int userId);
         Task<Result<object>> DeleteFile(string fileName, int userId);
+        Task<Result<bool>> VerifyMultipleForSubmission(List<IFormFile> files);
+        Task<Result<bool>> VerifyMultiple(List<IFormFile> files);
+        Task<Result<bool>> VerifySingle(IFormFile files);
     }
 }

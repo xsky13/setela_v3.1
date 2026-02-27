@@ -17,7 +17,7 @@ namespace SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AssignmentSubmissionController(IMediator _mediator) : ControllerBase
+    public class AssignmentSubmissionController(IMediator _mediator, IFileStorage _storageService) : ControllerBase
     {
         [Authorize]
         [HttpGet("{id}")]
@@ -29,10 +29,14 @@ namespace SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature
 
         [Authorize]
         [HttpPost]
+        [RequestSizeLimit(50 * 1024 * 1024)]
         public async Task<ActionResult<AssignmentSubmissionDTO>> Create([FromForm] CreateAssignmentSubmissionRequestDTO request)
         {
             ClaimsPrincipal currentUser = HttpContext.User;
             string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            var filesVerified = await _storageService.VerifyMultipleForSubmission(request.Files);
+            if (!filesVerified.Success) return BadRequest(filesVerified.Error);
 
             var response = await _mediator.Send(new CreateAssignmentSubmissionCommand
             {

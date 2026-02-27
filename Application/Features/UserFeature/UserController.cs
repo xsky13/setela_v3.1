@@ -71,6 +71,7 @@ namespace SetelaServerV3._1.Application.Features.UserFeature
 
         [Authorize]
         [HttpPut("{id}")]
+        [RequestSizeLimit(5 * 1024 * 1024)]
         public async Task<ActionResult<UserDTO>> UpdateUser([FromForm] UpdateUserRequestDTO request, int id)
         {
             ClaimsPrincipal currentUser = HttpContext.User;
@@ -82,6 +83,16 @@ namespace SetelaServerV3._1.Application.Features.UserFeature
                 .Where(role => role.HasValue)
                 .Select(role => role!.Value)
                 .ToList();
+
+            if (request.NewPicture != null)
+            {
+                if (request.NewPicture.Length > 2 * 1024 * 1024)
+                    return BadRequest("Imagen demasiado grande.");
+
+                var contentType = request.NewPicture.ContentType.ToLower();
+                if (!contentType.StartsWith("image/"))
+                    return BadRequest("El archivo debe ser una imagen.");
+            }
 
             var response = await _mediator.Send(new UpdateUserCommand
             {
