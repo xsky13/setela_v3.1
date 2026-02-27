@@ -54,7 +54,7 @@ namespace SetelaServerV3._1.Application.Features.UserFeature
 
         [Authorize]
         [HttpPost("change_password")] 
-        public async Task<ActionResult<object>> ChangePassword(ChangePasswordRequestDTO request)
+        public async Task<ActionResult<object>> ChangePassword([FromForm] ChangePasswordRequestDTO request)
         {
             ClaimsPrincipal currentUser = HttpContext.User;
             string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
