@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SetelaServerV3._1.Application.Features.UserFeature.Commands.AddRoleToUserCommand;
+using SetelaServerV3._1.Application.Features.UserFeature.Commands.ChangePasswordCommand;
 using SetelaServerV3._1.Application.Features.UserFeature.Commands.RemoveRoleFromUserCommand;
 using SetelaServerV3._1.Application.Features.UserFeature.Commands.UpdateUserCommand;
 using SetelaServerV3._1.Application.Features.UserFeature.DTO;
@@ -48,6 +49,23 @@ namespace SetelaServerV3._1.Application.Features.UserFeature
         public async Task<ActionResult<UserDTO>> GetUser(int id)
         {
             var response = await _mediator.Send(new GetUserByIdQuery { Id = id });
+            return response.ToActionResult();
+        }
+
+        [Authorize]
+        [HttpPost("change_password")] 
+        public async Task<ActionResult<object>> ChangePassword(ChangePasswordRequestDTO request)
+        {
+            ClaimsPrincipal currentUser = HttpContext.User;
+            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            var response = await _mediator.Send(new ChangePasswordCommand
+            {
+                OldPassword = request.OldPassword,
+                NewPassword = request.NewPassword,
+                NewPasswordRepeat = request.NewPasswordRepeat,
+                UserId = int.Parse(userId)
+            });
             return response.ToActionResult();
         }
 
