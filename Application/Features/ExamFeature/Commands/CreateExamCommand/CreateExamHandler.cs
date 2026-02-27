@@ -28,8 +28,8 @@ namespace SetelaServerV3._1.Application.Features.ExamFeature.Commands.CreateExam
                 EndTime = command.Exam.EndTime,
                 MaxGrade = command.Exam.MaxGrade,
                 Weight = command.Exam.Weight,
-                Visible = false,
-                Closed = false,
+                Visible = true,
+                Closed = true,
                 CreationDate = DateTime.UtcNow,
                 DisplayOrder = await maxDisplayOrder.GetNext(command.Exam.CourseId, cancellationToken),
                 CourseId = command.Exam.CourseId
