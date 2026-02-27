@@ -10,6 +10,7 @@ namespace SetelaServerV3._1.Application.Features.UserFeature.DTO
         public string Email { get; set; }
         public string PasswordHash { get; set; }
         public string UserImageUrl { get; set; }
+        public string? PhoneNumber { get; set; }
         public UserRoles[] Roles { get; set; }
         public List<EnrollmentDTO> Enrollments { get; set; } = [];
         public List<CourseSimpleDTO> ProfessorCourses { get; set; } = [];

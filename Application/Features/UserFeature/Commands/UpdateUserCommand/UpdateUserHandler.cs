@@ -48,6 +48,8 @@ namespace SetelaServerV3._1.Application.Features.UserFeature.Commands.UpdateUser
             user.Name = command.Name;
             user.Email = command.Email;
 
+            if (command.PhoneNumber != null) user.PhoneNumber = command.PhoneNumber;
+
             await _db.SaveChangesAsync(cancellationToken);
 
             return Result<UserDTO>.Ok(_mapper.Map<UserDTO>(user));

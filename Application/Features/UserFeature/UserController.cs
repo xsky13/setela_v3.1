@@ -90,6 +90,7 @@ namespace SetelaServerV3._1.Application.Features.UserFeature
                 UserRoles = userRoleEnums,
                 Name = request.Name,
                 Email = request.Email,
+                PhoneNumber = request.PhoneNumber,
                 Password = request.Password,
                 NewPicture = request.NewPicture,
                 BaseUrl = $"{Request.Scheme}://{Request.Host}",

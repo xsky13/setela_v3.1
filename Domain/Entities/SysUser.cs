@@ -8,6 +8,7 @@ namespace SetelaServerV3._1.Domain.Entities
         public string Name { get; set; }
         public string Email { get; set; }
         public string PasswordHash { get; set; }
+        public string? PhoneNumber { get; set; }
         public string UserImageUrl { get; set; } = "http://localhost:5182/cdn/user_default_image.png"; // FIX
         public List<UserRoles> Roles { get; set; }
         public List<Enrollment> Enrollments { get; set; } = [];
