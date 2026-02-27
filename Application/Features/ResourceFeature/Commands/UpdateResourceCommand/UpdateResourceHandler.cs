@@ -27,7 +27,7 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Update
             }
 
             if (command.Url != null) resource.Url = command.Url;
-            if (command.LinkText != null) resource.LinkText = command.LinkText;
+            resource.LinkText = string.IsNullOrEmpty(command.LinkText) ? Path.GetFileName(resource.Url) : command.LinkText;
 
             await _db.SaveChangesAsync(cancellationToken);
 
