@@ -12,6 +12,7 @@ namespace SetelaServerV3._1.Shared.Common.DTO
         public ResourceParentType ParentType { get; set; }
         public int ParentId { get; set; }
         public DateTime CreationDate { get; set; }
+        public int CourseId { get; set; }
         public UserSimpleDTO SysUser { get; set; }
         public int DisplayOrder { get; set; }
     }

@@ -31,7 +31,7 @@ namespace SetelaServerV3._1.Application.Features.UserFeature.Commands.UpdateUser
             if (command.NewPicture != null)
             {
                 var filename = await _storageService.SaveFile(command.NewPicture, command.UserId);
-                user.UserImageUrl = command.BaseUrl.Replace("/api", "") + "/cdn/" + command.UserId + '/' + filename.Value;
+                user.UserImageUrl = command.BaseUrl + "/cdn/" + command.UserId + '/' + filename.Value;
             }
 
             /**/

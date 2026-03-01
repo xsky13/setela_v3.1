@@ -12,6 +12,10 @@ namespace SetelaServerV3._1.Application.Features.UserProgressFeature.Commands.To
     {
         public async Task<Result<UserProgressDTO>> Handle(ToggleItemCommand command, CancellationToken cancellationToken)
         {
+            Console.WriteLine("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            Console.WriteLine(command.Request.ParentType);
+            Console.WriteLine(command.Request.CourseId);
+            Console.WriteLine(command.Request.ParentId);
             var progressItem = await _db.UserProgress.FirstOrDefaultAsync(p =>
                 p.ParentType == command.Request.ParentType &&
                 p.ParentId == command.Request.ParentId &&
