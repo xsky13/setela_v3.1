@@ -17,7 +17,7 @@ namespace SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AssignmentSubmissionController(IMediator _mediator, IFileStorage _storageService) : ControllerBase
+    public class AssignmentSubmissionController(IMediator _mediator, IFileStorage _storageService, IConfiguration _configuration) : ControllerBase
     {
         [Authorize]
         [HttpGet("{id}")]
@@ -42,7 +42,7 @@ namespace SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature
             {
                 UserId = int.Parse(userId),
                 AssignmentSubmission = request,
-                BaseUrl = $"{Request.Scheme}://{Request.Host}",
+                BaseUrl = _configuration["BaseUrl"] ?? throw new InvalidOperationException("BaseUrl doesnt exist"),
             });
 
             return response.ToActionResult();

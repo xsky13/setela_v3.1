@@ -15,7 +15,7 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ExamSubmissionController(IMediator _mediator) : ControllerBase
+    public class ExamSubmissionController(IMediator _mediator, IConfiguration _configuration) : ControllerBase
     {
         [Authorize]
         [HttpGet("{id}")]
@@ -57,7 +57,7 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature
                 UserId = int.Parse(userId),
                 ExamSubmissionId = id,
                 TextContent = request.TextContent,
-                BaseUrl = $"{Request.Scheme}://{Request.Host}",
+                BaseUrl = _configuration["BaseUrl"] ?? throw new InvalidOperationException("BaseUrl doesnt exist"),
                 CourseId = request.CourseId,
             });
             return response.ToActionResult();

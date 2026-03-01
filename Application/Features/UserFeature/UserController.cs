@@ -18,7 +18,7 @@ namespace SetelaServerV3._1.Application.Features.UserFeature
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController(IMediator _mediator) : ControllerBase
+    public class UserController(IMediator _mediator, IConfiguration _configuration) : ControllerBase
     {
         [Authorize]
         [HttpGet]
@@ -104,7 +104,7 @@ namespace SetelaServerV3._1.Application.Features.UserFeature
                 PhoneNumber = request.PhoneNumber,
                 Password = request.Password,
                 NewPicture = request.NewPicture,
-                BaseUrl = $"{Request.Scheme}://{Request.Host}",
+                BaseUrl = _configuration["BaseUrl"] ?? throw new InvalidOperationException("BaseUrl doesnt exist"),
             });
 
             return response.ToActionResult();

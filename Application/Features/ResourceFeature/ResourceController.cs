@@ -16,7 +16,7 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ResourceController(IMediator _mediator, IFileStorage _storageService) : ControllerBase
+    public class ResourceController(IMediator _mediator, IFileStorage _storageService, IConfiguration _configuration) : ControllerBase
     {
         [Authorize]
         [HttpPost("multiple")]
@@ -32,7 +32,7 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature
             var response = await _mediator.Send(new CreateMultipleResourcesCommand
             {
                 UserId = int.Parse(userId),
-                BaseUrl = $"{Request.Scheme}://{Request.Host}",
+                BaseUrl = _configuration["BaseUrl"] ?? throw new InvalidOperationException("BaseUrl doesnt exist"),
                 Request = request
             });
 
@@ -67,7 +67,7 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature
 
                 var response = await _mediator.Send(new CreateResourceCommand
                 {
-                    BaseUrl = $"{Request.Scheme}://{Request.Host}",
+                    BaseUrl = _configuration["BaseUrl"] ?? throw new InvalidOperationException("BaseUrl doesnt exist"),
                     Url = finalPath,
                     LinkText = request.LinkText,
                     Type = request.Type,
