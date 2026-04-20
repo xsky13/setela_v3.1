@@ -19,28 +19,25 @@ using SetelaServerV3._1.Shared.Common;
 using SetelaServerV3._1.Shared.Common.Interfaces;
 using SetelaServerV3._1.Shared.Common.Services;
 using SetelaServerV3._1.Shared.Policies;
+using System.Collections.Concurrent;
+using System.Security.Claims;
 using System.Text;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-// Define a specific policy name
 var allowedOrigins = "setela_client_v3.1";
 
-// Add CORS services to the container
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: allowedOrigins,
         builder =>
         {
             // **CRITICAL:** Replace 'http://localhost:5173' with the exact URL of your frontend application.
-            // You can add multiple origins separated by commas or by calling WithOrigins multiple times.
             builder.WithOrigins("http://localhost:5173")
-                   // This allows all standard HTTP methods (GET, POST, PUT, DELETE, OPTIONS, etc.)
                    .AllowAnyMethod()
-                   // This allows all headers to be sent in the request
                    .AllowAnyHeader()
-                   // Optional but recommended for development: allows credentials (like cookies) to be sent
                    .AllowCredentials();
         });
 });
@@ -63,7 +60,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
 
- 		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("Jwt__Key") ?? throw new InvalidOperationException("No hay jwtkey"))),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("Jwt__Key") ?? throw new InvalidOperationException("No hay jwtkey"))),
         ValidIssuers = [builder.Configuration["Jwt:Issuer"]],
         ValidAudiences = [builder.Configuration["Jwt:Audience"]],
     };
@@ -72,7 +69,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 var connectionString = Environment.GetEnvironmentVariable("DB_CONN");
 // Program.cs
 //builder.Services.AddDbContextFactory<AppDbContext>(options =>
-    //options.UseNpgsql(connectionString));
+//options.UseNpgsql(connectionString));
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
@@ -83,12 +80,33 @@ builder.Services.AddScoped<IResourceCleanupService, ResourceCleanupService>();
 
 builder.Services.AddAuthorization();
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+    {
+        // if login, only 5 attempts per minute.
+        // else 30 requests per minute
+        string partitionKey = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)
+                          ?? httpContext.Connection.RemoteIpAddress?.ToString()
+                          ?? "anonymous";
 
+        bool isAuthRoute = httpContext.Request.Path.Value?.Contains("/api/auth") ?? false;
+        return RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: $"{partitionKey}_{isAuthRoute}",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = isAuthRoute ? 10 : 30,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+        });
+    });
+});
 
 
 builder.Services.AddAutoMapper(
     typeof(GeneralMappingProfile).Assembly,
-    typeof(CourseMappingProfile).Assembly, 
+    typeof(CourseMappingProfile).Assembly,
     typeof(UserMappingProfile).Assembly,
     typeof(TopicSeparatorMappingProfile).Assembly,
     typeof(ModuleMappingProfile).Assembly,
