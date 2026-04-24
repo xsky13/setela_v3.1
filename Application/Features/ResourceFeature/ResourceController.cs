@@ -56,20 +56,28 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature
             var fileVerified = await _storageService.VerifySingle(request.File);
             if (!fileVerified.Success) return BadRequest(fileVerified.Error);
 
-            string finalPath = string.Empty;
+            string fileUri = string.Empty;
+            string fileName = string.Empty;
 
             if (request.File != null)
             {
                 var uploadResult = await _storageService.SaveFile(request.File, int.Parse(userId));
                 if (!uploadResult.Success) return BadRequest(uploadResult.Error);
-                finalPath = uploadResult.Value;
-            } else finalPath = request.Url!;
 
-                var response = await _mediator.Send(new CreateResourceCommand
+                fileUri = uploadResult.Value!;
+
+
+                Uri uri = new Uri(fileUri);
+                fileName = Path.GetFileName(uri.AbsolutePath);
+
+            } else fileUri = request.Url!;
+
+
+            var response = await _mediator.Send(new CreateResourceCommand
                 {
                     BaseUrl = Environment.GetEnvironmentVariable("APP_URL") ?? throw new InvalidOperationException("BaseUrl doesnt exist"),
-                    Url = finalPath,
-                    LinkText = request.LinkText,
+                    Url = fileUri,
+                    LinkText = string.IsNullOrEmpty(request.LinkText) ? fileName : request.LinkText,
                     Type = request.Type,
                     ParentType = request.ParentType,
                     ParentId = request.ParentId,

@@ -42,10 +42,13 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Create
 
                     fileUrls.Add(fileSaveResponse.Value!);
 
+                    Uri fileUri = new Uri(fileSaveResponse.Value!);
+                    string fileName = Path.GetFileName(fileUri.AbsolutePath);
+
                     var resource = new Resource
                     {
-                        Url = $"{command.BaseUrl}/cdn/{command.UserId}/{fileSaveResponse.Value}",
-                        LinkText = fileSaveResponse.Value,
+                        Url = fileSaveResponse.Value!,
+                        LinkText = fileName,
                         ResourceType = ResourceType.Document,
                         ParentType = parentResourceType,
                         ParentId = command.Request.ParentId,

@@ -48,19 +48,9 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature.Commands.Create
                     .ExecuteUpdateAsync(s => s.SetProperty(b => b.LastUdated, DateTime.UtcNow), cancellationToken);
             }
 
-            string savedUrl;
-            if (resourceType == ResourceType.Link)
-            {
-                savedUrl = command.Url;
-            }
-            else
-            {
-                savedUrl = $"{command.BaseUrl}/cdn/{command.UserId}/{command.Url}";
-            }
-
             var newResource = new Resource
             { 
-                Url = savedUrl,
+                Url = command.Url,
                 LinkText = string.IsNullOrEmpty(command.LinkText) ? command.Url : command.LinkText,
                 ResourceType = resourceType,
                 ParentType = parentResourceType,
