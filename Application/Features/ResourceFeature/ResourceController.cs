@@ -32,7 +32,7 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature
             var response = await _mediator.Send(new CreateMultipleResourcesCommand
             {
                 UserId = int.Parse(userId),
-                BaseUrl = _configuration["BaseUrl"] ?? throw new InvalidOperationException("BaseUrl doesnt exist"),
+                BaseUrl = Environment.GetEnvironmentVariable("APP_URL") ?? throw new InvalidOperationException("BaseUrl doesnt exist"),
                 Request = request
             });
 
@@ -67,7 +67,7 @@ namespace SetelaServerV3._1.Application.Features.ResourceFeature
 
                 var response = await _mediator.Send(new CreateResourceCommand
                 {
-                    BaseUrl = _configuration["BaseUrl"] ?? throw new InvalidOperationException("BaseUrl doesnt exist"),
+                    BaseUrl = Environment.GetEnvironmentVariable("APP_URL") ?? throw new InvalidOperationException("BaseUrl doesnt exist"),
                     Url = finalPath,
                     LinkText = request.LinkText,
                     Type = request.Type,

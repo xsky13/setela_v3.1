@@ -57,7 +57,7 @@ namespace SetelaServerV3._1.Application.Features.ExamSubmissionFeature
                 UserId = int.Parse(userId),
                 ExamSubmissionId = id,
                 TextContent = request.TextContent,
-                BaseUrl = _configuration["BaseUrl"] ?? throw new InvalidOperationException("BaseUrl doesnt exist"),
+                BaseUrl = Environment.GetEnvironmentVariable("APP_URL") ?? throw new InvalidOperationException("BaseUrl doesnt exist"),
                 CourseId = request.CourseId,
             });
             return response.ToActionResult();

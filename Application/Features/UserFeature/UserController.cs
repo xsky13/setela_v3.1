@@ -104,7 +104,7 @@ namespace SetelaServerV3._1.Application.Features.UserFeature
                 PhoneNumber = request.PhoneNumber,
                 Password = request.Password,
                 NewPicture = request.NewPicture,
-                BaseUrl = _configuration["BaseUrl"] ?? throw new InvalidOperationException("BaseUrl doesnt exist"),
+                BaseUrl = Environment.GetEnvironmentVariable("APP_URL") ?? throw new InvalidOperationException("BaseUrl doesnt exist"),
             });
 
             return response.ToActionResult();

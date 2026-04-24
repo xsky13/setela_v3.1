@@ -42,7 +42,7 @@ namespace SetelaServerV3._1.Application.Features.AssignmentSubmissionFeature
             {
                 UserId = int.Parse(userId),
                 AssignmentSubmission = request,
-                BaseUrl = _configuration["BaseUrl"] ?? throw new InvalidOperationException("BaseUrl doesnt exist"),
+                BaseUrl = Environment.GetEnvironmentVariable("APP_URL") ?? throw new InvalidOperationException("BaseUrl doesnt exist"),
             });
 
             return response.ToActionResult();
