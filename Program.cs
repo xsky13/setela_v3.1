@@ -67,6 +67,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 
 var connectionString = Environment.GetEnvironmentVariable("DB_CONN");
+
+Console.WriteLine($"DEBUG: Connection string length is {connectionString?.Length ?? 0}");
+if (!string.IsNullOrEmpty(connectionString))
+    Console.WriteLine($"DEBUG: Starts with {connectionString.Substring(0, Math.Min(10, connectionString.Length))}");
+
+
 if (connectionString != null && (connectionString.StartsWith("postgresql://") || connectionString.StartsWith("postgres://")))
 {
     // This helper class automatically parses the URI into keywords like Host, Port, etc.
