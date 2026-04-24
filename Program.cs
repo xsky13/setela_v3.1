@@ -82,9 +82,7 @@ if (connectionString.Contains("://"))
                 $"SSL Mode=Require;" +
                 $"Trust Server Certificate=true;" +
                 $"Pooling=true;" +
-                $"Include Error Detail=true;" +
-                $"GssApiTrustServerCertificate=true;" + 
-                $"Kerberos Services=None;";
+                $"Include Error Detail=true;";
 }
 else
 {
