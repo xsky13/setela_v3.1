@@ -67,6 +67,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 
 var connectionString = Environment.GetEnvironmentVariable("DB_CONN");
+if (connectionString != null && (connectionString.StartsWith("postgresql://") || connectionString.StartsWith("postgres://")))
+{
+    // This helper class automatically parses the URI into keywords like Host, Port, etc.
+    var builderUri = new Npgsql.NpgsqlConnectionStringBuilder(connectionString);
+    connectionString = builderUri.ConnectionString;
+}
 // Program.cs
 //builder.Services.AddDbContextFactory<AppDbContext>(options =>
 //options.UseNpgsql(connectionString));
