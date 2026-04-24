@@ -59,7 +59,10 @@ namespace SetelaServerV3._1.Shared.Common.Services
 
                 await _supabase.Storage
                     .From(BucketName)
-                    .Upload(ms.ToArray(), supabasePath);
+                    .Upload(ms.ToArray(), supabasePath, new Supabase.Storage.FileOptions
+                    {
+                        Upsert = true
+                    });
 
                 var url = await _supabase.Storage
                     .From(BucketName)
