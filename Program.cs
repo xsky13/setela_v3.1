@@ -68,22 +68,30 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 var connectionString = Environment.GetEnvironmentVariable("DB_CONN");
 
-Console.WriteLine($"DEBUG: Connection string length is {connectionString?.Length ?? 0}");
-if (!string.IsNullOrEmpty(connectionString))
-    Console.WriteLine($"DEBUG: Starts with {connectionString.Substring(0, Math.Min(10, connectionString.Length))}");
-
-
-if (connectionString != null && (connectionString.StartsWith("postgresql://") || connectionString.StartsWith("postgres://")))
+string finalConn;
+if (connectionString.Contains("://"))
 {
-    // This helper class automatically parses the URI into keywords like Host, Port, etc.
-    var builderUri = new Npgsql.NpgsqlConnectionStringBuilder(connectionString);
-    connectionString = builderUri.ConnectionString;
+    var uri = new Uri(connectionString);
+    var userInfo = uri.UserInfo.Split(':');
+
+    finalConn = $"Host={uri.Host};" +
+                $"Port={uri.Port};" +
+                $"Database={uri.AbsolutePath.TrimStart('/')};" +
+                $"Username={userInfo[0]};" +
+                $"Password={userInfo[1]};" +
+                $"SSL Mode=Require;" +
+                $"Trust Server Certificate=true;" +
+                $"Pooling=true;";
+}
+else
+{
+    finalConn = connectionString;
 }
 // Program.cs
 //builder.Services.AddDbContextFactory<AppDbContext>(options =>
 //options.UseNpgsql(connectionString));
 
-builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(finalConn));
 
 builder.Services.AddScoped<IPermissionHandler, Permissions>();
 builder.Services.AddScoped<MaxDisplayOrder>();
