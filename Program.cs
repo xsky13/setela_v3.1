@@ -99,8 +99,13 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(finalCo
 
 builder.Services.AddScoped<IPermissionHandler, Permissions>();
 builder.Services.AddScoped<MaxDisplayOrder>();
-builder.Services.AddScoped<IFileStorage, LocalFileService>();
+//builder.Services.AddScoped<IFileStorage, LocalFileService>();
+builder.Services.AddScoped<IFileStorage, SupabaseFileService>();
 builder.Services.AddScoped<IResourceCleanupService, ResourceCleanupService>();
+
+var supabaseUrl = Environment.GetEnvironmentVariable("SUPABASE_URL");
+var supabaseKey = Environment.GetEnvironmentVariable("SUPABASE_KEY");
+builder.Services.AddScoped(_ => new Supabase.Client(supabaseUrl, supabaseKey));
 
 builder.Services.AddAuthorization();
 
@@ -155,27 +160,6 @@ builder.Services.AddExceptionHandler<ExceptionHandler>();
 
 var app = builder.Build();
 
-var uploadArea = builder.Configuration["UploadArea"] ?? "UploadArea";
-
-if (!Path.IsPathRooted(uploadArea))
-    uploadArea = Path.Combine(Directory.GetCurrentDirectory(), uploadArea);
-
-if (!Directory.Exists(uploadArea))
-    Directory.CreateDirectory(uploadArea);
-
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(uploadArea),
-    RequestPath = "/cdn",
-    ServeUnknownFileTypes = true,
-    OnPrepareResponse = ctx =>
-    {
-        if (ctx.Context.Request.Query.ContainsKey("download"))
-        {
-            ctx.Context.Response.Headers.Append("Content-Disposition", "attachment");
-        }
-    }
-});
 
 app.UseExceptionHandler(options => { });
 
