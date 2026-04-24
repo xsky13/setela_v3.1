@@ -131,10 +131,17 @@ builder.Services.AddExceptionHandler<ExceptionHandler>();
 
 var app = builder.Build();
 
-var uploadPath = builder.Configuration["UploadArea"];
+var uploadArea = builder.Configuration["UploadArea"] ?? "UploadArea";
+
+if (!Path.IsPathRooted(uploadArea))
+    uploadArea = Path.Combine(Directory.GetCurrentDirectory(), uploadArea);
+
+if (!Directory.Exists(uploadArea))
+    Directory.CreateDirectory(uploadArea);
+
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new PhysicalFileProvider(uploadPath),
+    FileProvider = new PhysicalFileProvider(uploadArea),
     RequestPath = "/cdn",
     ServeUnknownFileTypes = true,
     OnPrepareResponse = ctx =>
