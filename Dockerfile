@@ -9,6 +9,7 @@ RUN dotnet publish -c Release -o /app/publish
 # Runtime Stage
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
+RUN apt-get update && apt-get install -y libgssapi-krb5-2 && rm -rf /var/lib/apt/lists/*
 COPY --from=build /app/publish .
 # Render assigns a random port, .NET needs to listen on 0.0.0.0
 ENV ASPNETCORE_URLS=http://+:10000 

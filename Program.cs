@@ -81,7 +81,10 @@ if (connectionString.Contains("://"))
                 $"Password={userInfo[1]};" +
                 $"SSL Mode=Require;" +
                 $"Trust Server Certificate=true;" +
-                $"Pooling=true;";
+                $"Pooling=true;" +
+                $"Include Error Detail=true;" +
+                $"GssApiTrustServerCertificate=true;" + 
+                $"Kerberos Services=None;";
 }
 else
 {
@@ -91,7 +94,10 @@ else
 //builder.Services.AddDbContextFactory<AppDbContext>(options =>
 //options.UseNpgsql(connectionString));
 
-builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(finalConn));
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(finalConn, npgsqlOptions =>
+{
+    npgsqlOptions.CommandTimeout(60);
+}));
 
 builder.Services.AddScoped<IPermissionHandler, Permissions>();
 builder.Services.AddScoped<MaxDisplayOrder>();
